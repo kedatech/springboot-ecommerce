@@ -1,3 +1,5 @@
+node_modules/
+src/main/resources/static/output.css
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
