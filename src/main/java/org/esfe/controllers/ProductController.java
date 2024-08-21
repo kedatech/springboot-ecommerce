@@ -83,8 +83,7 @@ public class ProductController {
 
     @PostMapping("/delete")
     public String delete(Product product, RedirectAttributes attributes) {
-        int productId = product.get
-        productService.eliminarPorId(product.get);
+        productService.eliminarPorId(product.getId());
         attributes.addFlashAttribute("msg", "Producto eliminado correctamente");
         return "redirect:/products";
     }

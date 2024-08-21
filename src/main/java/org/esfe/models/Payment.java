@@ -18,14 +18,14 @@ public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @Column(name = "stripe_payment_id", nullable = false)
-    private String stripePaymentId;
+    @Column(name = "id_enlace", nullable = false)
+    private String idEnlace;
 
     @Column(nullable = false)
     private double amount;
