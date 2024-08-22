@@ -18,4 +18,5 @@ public interface IWishlistService {
     Wishlist createOEditar(Wishlist wishlist);
 
     void eliminarPorId(Integer id);
+
 }

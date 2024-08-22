@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Setter
 @Getter
@@ -26,6 +27,11 @@ public class Order {
 
     @Column(name = "total_amount", nullable = false)
     private double totalAmount;
+
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,
+            orphanRemoval = false)
+    private List<OrderItem> orderItems;
 
     @Column(nullable = false)
     private String status;

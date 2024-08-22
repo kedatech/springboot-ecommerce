@@ -1,7 +1,6 @@
 package org.esfe.services.implementations;
 
 import org.esfe.models.Wishlist;
-import org.esfe.repository.IUserRepository;
 import org.esfe.repository.IWishlistRepository;
 import org.esfe.services.interfaces.IWishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
