@@ -37,7 +37,7 @@ public class WishlistService implements IWishlistService {
     }
 
     @Override
-    public void eliminarPorId(Wishlist id) {
+    public void eliminarPorId(Integer id) {
         wishlistRepository.deleteById(id);
     }
 }
