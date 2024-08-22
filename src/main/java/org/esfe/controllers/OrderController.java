@@ -31,17 +31,14 @@ public class OrderController {
     // DELETE: Eliminar una orden
     @DeleteMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
-        boolean isRemoved = orderService.deleteOrder(id);
-        if (!isRemoved) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> deleteOrder(@PathVariable Integer id) {
+        orderService.eliminarPorId(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // GET (por usuario): Obtener órdenes del usuario y dirigir a una vista
     @GetMapping("/user/{userId}")
-    public String getOrdersByUser(@PathVariable Long userId, Model model) {
+    public String getOrdersByUser(@PathVariable Integer userId, Model model) {
         List<Order> orders = orderService.getOrdersByUser(userId);
         model.addAttribute("orders", orders);
         return "orders/userOrders";  // Cambia "userOrdersView" por el nombre de tu vista
@@ -49,17 +46,18 @@ public class OrderController {
 
     // GET (detalles): Obtener detalles de una orden de un ítem
     @GetMapping("/{orderId}/items/{itemId}")
-    public ResponseEntity<OrderItem> getOrderItemDetails(@PathVariable Long orderId, @PathVariable Long itemId) {
+    public ResponseEntity<OrderItem> getOrderItemDetails(@PathVariable Integer orderId, @PathVariable Integer itemId) {
         Optional<OrderItem> orderItem = orderService.getOrderItemDetails(orderId, itemId);
         return orderItem
                 .map(item -> new ResponseEntity<>(item, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+
     // POST (ítem): Añadir un ítem a la orden
     @PostMapping("/{orderId}/items")
     @ResponseBody
-    public ResponseEntity<OrderItem> addItemToOrder(@PathVariable Long orderId, @RequestBody OrderItem orderItem) {
+    public ResponseEntity<OrderItem> addItemToOrder(@PathVariable Integer orderId, @RequestBody OrderItem orderItem) {
         OrderItem newItem = orderService.addItemToOrder(orderId, orderItem);
         return new ResponseEntity<>(newItem, HttpStatus.CREATED);
     }
@@ -67,7 +65,7 @@ public class OrderController {
     // DELETE (ítem): Eliminar un ítem de la orden
     @DeleteMapping("/{orderId}/items/{itemId}")
     @ResponseBody
-    public ResponseEntity<Void> deleteItemFromOrder(@PathVariable Long orderId, @PathVariable Long itemId) {
+    public ResponseEntity<Void> deleteItemFromOrder(@PathVariable Integer orderId, @PathVariable Integer itemId) {
         boolean isRemoved = orderService.deleteItemFromOrder(orderId, itemId);
         if (!isRemoved) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -78,7 +76,7 @@ public class OrderController {
     // UPDATE (ítem): Actualizar un ítem de la orden
     @PutMapping("/{orderId}/items/{itemId}")
     @ResponseBody
-    public ResponseEntity<OrderItem> updateItemInOrder(@PathVariable Long orderId, @PathVariable Long itemId, @RequestBody OrderItem updatedItem) {
+    public ResponseEntity<OrderItem> updateItemInOrder(@PathVariable Integer orderId, @PathVariable Integer itemId, @RequestBody OrderItem updatedItem) {
         OrderItem orderItem = orderService.updateItemInOrder(orderId, itemId, updatedItem);
         return new ResponseEntity<>(orderItem, HttpStatus.OK);
     }

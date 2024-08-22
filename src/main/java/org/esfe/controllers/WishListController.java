@@ -63,9 +63,9 @@ public class WishListController {
         return "wishlist/delete";
     }
 
-    @PostMapping("/delete")
-    public String delete(Wishlist wishlist, RedirectAttributes attributes){
-        wishlistService.eliminarPorId(wishlist);
+    @PostMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id, RedirectAttributes attributes){
+        wishlistService.eliminarPorId(id);
         attributes.addFlashAttribute("msg", "La Wishlist eliminado correctamente");
         return "redirect:/wishlist";
     }
