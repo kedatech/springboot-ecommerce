@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html
-      lang="es"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        lang="es"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 
-      layout:decorate="/layouts/_mainLayout">
+        layout:decorate="/layouts/_mainLayout" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <title>Title</title>
 </head>
 <body>
@@ -19,7 +20,18 @@
 
         <input class="w-full border rounded-md pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:shadow-outline" type="text" placeholder="Search">
     </div>
-    <h1 class="text-center">¡Bienvenidos :D!</h1>
+    <h1 class="text-center">¡Bienvenido <span th:text="${username}"></span>!</h1>
+    <div class="text-center m-4">
+        <a href="/oauth2/authorization/google" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+            Login
+        </a>
+
+        <a href="/logout" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+            Logout
+        </a>
+
+    </div>
+
 </div>
 </body>
 </html>

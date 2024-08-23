@@ -24,6 +24,9 @@ public class User {
     private String email;
 
     private String password;
+    private String name;
+
+    private boolean isAdmin = false;
 
     @Column(unique = true)
     private String googleId;
