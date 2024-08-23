@@ -1,18 +1,19 @@
-<!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="/css/output.css" rel="stylesheet" />
+    <title>My Layout</title>
 </head>
 <body>
     <header>
-        <h1>Header</h1>
+        <h1>My Website Header</h1>
     </header>
-    <main layout:fragment="content"></main>
+    <main>
+        <div layout:fragment="content">
+            <!-- Default content here -->
+        </div>
+    </main>
     <footer>
-        <p>Footer</p>
+        <p>My Footer</p>
     </footer>
 </body>
 </html>
