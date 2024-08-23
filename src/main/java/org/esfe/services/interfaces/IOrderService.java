@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface IOrderService {
 
-    OrderItem updateItemInOrder(Integer orderId, Integer itemId, OrderItem updatedItem);
+    // OrderItem updateItemInOrder(Integer orderId, Integer itemId, OrderItem updatedItem);
 
     boolean deleteItemFromOrder(Integer orderId, Integer itemId);
 
