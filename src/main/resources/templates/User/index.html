@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-4">Usuarios</h2>
+    <a href="/user/create" class="p-3 mb-4 inline-block rounded-sm bg-green-600 text-white">Crear nuevo</a>
+
+    <table class="min-w-full bg-white">
+        <thead>
+        <tr>
+            <th class="py-2 px-4 border-b border-gray-200">ID</th>
+            <th class="py-2 px-4 border-b border-gray-200">Email</th>
+            <th class="py-2 px-4 border-b border-gray-200">Is Admin</th>
+            <th class="py-2 px-4 border-b border-gray-200">Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td class="py-2 px-4 border-b border-gray-200" th:text="${user.id}"></td>
+            <td class="py-2 px-4 border-b border-gray-200" th:text="${user.email}"></td>
+            <td class="py-2 px-4 border-b border-gray-200" th:text="${user.isAdmin}"></td>
+            <td class="py-2 px-4 border-b border-gray-200">
+                <a th:href="@{'/user/' + ${user.id}}" class="text-blue-500 hover:text-blue-700">Ver</a> |
+                <a th:href="@{'/user/edit/' + ${user.id}}" class="text-yellow-500 hover:text-yellow-700">Editar</a> |
+                <a th:href="@{'/user/delete/' + ${user.id}}" class="text-red-500 hover:text-red-700"
+                   onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">Eliminar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

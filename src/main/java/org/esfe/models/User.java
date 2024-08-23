@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Setter
 @Getter
@@ -24,6 +25,9 @@ public class User {
     private String email;
 
     private String password;
+    private String name;
+
+    private boolean isAdmin = false;
 
     @Column(unique = true)
     private String googleId;
@@ -33,4 +37,15 @@ public class User {
 
     @Column(name = "updated_at", nullable = false)
     private Timestamp updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = Timestamp.from(Instant.now());
+        updatedAt = Timestamp.from(Instant.now());
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = Timestamp.from(Instant.now());
+    }
 }
