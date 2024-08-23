@@ -114,36 +114,36 @@ public class OrderService implements IOrderService {
     }
 
 
-    @Override
-    public OrderItem updateItemInOrder(Integer orderId, Integer itemId, OrderItem updatedItem) {
-        // Buscar la orden por ID
-        Optional<Order> order = orderRepository.findById(orderId);
+    // @Override
+    // public OrderItem updateItemInOrder(Integer orderId, Integer itemId, OrderItem updatedItem) {
+    //     // Buscar la orden por ID
+    //     Optional<Order> order = orderRepository.findById(orderId);
 
-        if (order.isPresent()) {
-            Order existingOrder = order.get();
+    //     if (order.isPresent()) {
+    //         Order existingOrder = order.get();
 
-            // Buscar el ítem dentro de la orden
-            Optional<OrderItem> itemToUpdate = existingOrder.getOrderItems().stream()
-                    .filter(item -> item.getId().equals(itemId))
-                    .findFirst();
+    //         // Buscar el ítem dentro de la orden
+    //         Optional<OrderItem> itemToUpdate = existingOrder.getOrderItems().stream()
+    //                 .filter(item -> item.getId().equals(itemId))
+    //                 .findFirst();
 
-            if (itemToUpdate.isPresent()) {
-                OrderItem item = itemToUpdate.get();
+    //         if (itemToUpdate.isPresent()) {
+    //             OrderItem item = itemToUpdate.get();
 
-                // Actualizar el ítem con los nuevos valores
-                item.setame(updatedItem.getName());
-                item.setPrice(updatedItem.getPrice());
-                item.setQuantity(updatedItem.getQuantity());
-                // Puedes actualizar otros campos según tu entidad OrderItem
+    //             // Actualizar el ítem con los nuevos valores
+    //             item.setame(updatedItem.getName());
+    //             item.setPrice(updatedItem.getPrice());
+    //             item.setQuantity(updatedItem.getQuantity());
+    //             // Puedes actualizar otros campos según tu entidad OrderItem
 
-                // Guardar el ítem actualizado
-                orderItemRepository.save(item);
-                return item;
-            }
-        }
+    //             // Guardar el ítem actualizado
+    //             orderItemRepository.save(item);
+    //             return item;
+    //         }
+    //     }
 
-        throw new ResourceNotFoundException("Order or Item not found"); // Lanza una excepción si no se encuentra la orden o el ítem
-    }
+    //     throw new ResourceNotFoundException("Order or Item not found"); // Lanza una excepción si no se encuentra la orden o el ítem
+    // }
 
     @Override
     public Page<Order> buscarTodosPaginados(Pageable pageable) {

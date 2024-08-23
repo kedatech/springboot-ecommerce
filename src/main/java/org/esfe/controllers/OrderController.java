@@ -74,11 +74,11 @@ public class OrderController {
     }
 
     // UPDATE (ítem): Actualizar un ítem de la orden
-    @PutMapping("/{orderId}/items/{itemId}")
-    @ResponseBody
-    public ResponseEntity<OrderItem> updateItemInOrder(@PathVariable Integer orderId, @PathVariable Integer itemId, @RequestBody OrderItem updatedItem) {
-        OrderItem orderItem = orderService.updateItemInOrder(orderId, itemId, updatedItem);
-        return new ResponseEntity<>(orderItem, HttpStatus.OK);
-    }
+    // @PutMapping("/{orderId}/items/{itemId}")
+    // @ResponseBody
+    // public ResponseEntity<OrderItem> updateItemInOrder(@PathVariable Integer orderId, @PathVariable Integer itemId, @RequestBody OrderItem updatedItem) {
+    //     OrderItem orderItem = orderService.updateItemInOrder(orderId, itemId, updatedItem);
+    //     return new ResponseEntity<>(orderItem, HttpStatus.OK);
+    // }
 }
 
