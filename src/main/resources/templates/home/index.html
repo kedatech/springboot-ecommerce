@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html
-
-      lang="es"
+<html lang="es"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
@@ -9,33 +7,40 @@
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <title>Title</title>
+    <script>
+        function getGreeting(username) {
+            const now = new Date();
+            const hours = now.getHours();
+            let greeting;
+
+            if (hours < 12) {
+                greeting = "Buenos días";
+            } else if (hours < 18) {
+                greeting = "Buenas tardes";
+            } else {
+                greeting = "Buenas noches";
+            }
+
+            return `${greeting}, ${username}`;
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const username = /*[[${username}]]*/ 'usuario';
+            document.getElementById("greeting").innerText = getGreeting(username);
+        });
+    </script>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="relative mt-6 max-w-lg mx-auto">
-            <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
-                <svg class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none">
-                    <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </span>
-
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+            <svg class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none">
+                <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
         <input class="w-full border rounded-md pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:shadow-outline" type="text" placeholder="Search">
     </div>
-    <h1 class="text-center">¡Bienvenido <span th:text="${username}"></span>!</h1>
-    <div class="text-center m-4">
-        <a href="/oauth2/authorization/google" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-            Login
-        </a>
-
-        <a href="/logout" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-            Logout
-        </a>
-
-    </div>
-
+    <h1 class="text-center"><span id="greeting"></span>!</h1>
 </div>
 </body>
 </html>
-
-
-
