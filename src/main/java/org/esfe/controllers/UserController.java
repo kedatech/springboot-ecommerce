@@ -52,6 +52,23 @@ public class UserController {
         }
     }
 
+    // me-json
+    @GetMapping("/me-json")
+    @ResponseBody
+    public Object getUserByGoogleIdJson(OAuth2AuthenticationToken authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            String googleId = (String) authentication.getPrincipal().getAttributes().get("sub"); // Obtén el ID del usuario desde el token
+            Optional<User> user = userService.buscarPorGoogleId(googleId); // Necesitarás implementar este método en tu servicio
+            if (user.isPresent()) {
+                return user.get();
+            } else {
+                return "Usuario no encontrado";
+            }
+        } else {
+            return "No autenticado";
+        }
+    }
+
     @GetMapping("/create")
     public String createUserForm(Model model) {
         model.addAttribute("user", new User());
