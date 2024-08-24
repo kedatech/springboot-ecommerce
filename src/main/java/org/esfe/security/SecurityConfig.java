@@ -6,6 +6,7 @@ import org.esfe.services.implementations.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -40,9 +41,9 @@ public class SecurityConfig {
                         .requestMatchers("/security/**", "/login/**", "/logout", "/oauth2/**", "/", "/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(e -> e
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-                )
+//                .exceptionHandling(e -> e
+//                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+//                )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/", true)
                         .userInfoEndpoint(userInfo -> userInfo
@@ -59,7 +60,6 @@ public class SecurityConfig {
                 .csrf(c -> c
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
-
         return http.build();
     }
 
@@ -77,5 +77,4 @@ public class SecurityConfig {
             }
         };
     }
-
 }

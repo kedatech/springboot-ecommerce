@@ -1,32 +1,44 @@
 package org.esfe.security;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.esfe.models.User;
 import org.esfe.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Optional;
 
 @Component
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class AdminAuthorizationFilter implements Filter {
 
     @Autowired
     private IUserService userService;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        String uri = request.getRequestURI();
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // No initialization needed
+    }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        String uri = httpRequest.getRequestURI();
         boolean isAdmin = false;
         boolean isAuthenticated = false;
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication instanceof OAuth2AuthenticationToken) {
@@ -35,30 +47,25 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             Optional<User> user = userService.buscarPorGoogleId(googleId);
             isAdmin = user.isPresent() && user.get().isAdmin();
             isAuthenticated = true;
-            System.out.println(user.get().isAdmin());
         }
 
-        System.out.println(isAdmin);
+
         if (uri.startsWith("/user/manage")) {
-            if(isAdmin){
-                response.sendRedirect("user/manage");
+            if (!isAuthenticated) {
+                httpResponse.sendRedirect("/oauth2/authorization/google");
+                return;
+            } else if (!isAdmin) {
+                httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
                 return;
             }
-            if(!isAuthenticated)
-            {
-                response.sendRedirect("/oauth2/authorization/google");
-            }
-            else{
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-            }
-        }
-        else{
-            if(!isAuthenticated)
-            {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-            }
         }
 
 
+        chain.doFilter(request, response);
+    }
+
+    @Override
+    public void destroy() {
+        // No cleanup needed
     }
 }
