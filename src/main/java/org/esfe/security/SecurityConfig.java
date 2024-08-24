@@ -25,12 +25,10 @@ import java.util.Map;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final UserService userService;
 
     @Autowired
-    public SecurityConfig(CustomAuthenticationEntryPoint customAuthenticationEntryPoint, UserService userService) {
-        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+    public SecurityConfig(UserService userService) {
         this.userService = userService;
     }
 
@@ -41,9 +39,6 @@ public class SecurityConfig {
                         .requestMatchers("/security/**", "/login/**", "/logout", "/oauth2/**", "/", "/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
-//                .exceptionHandling(e -> e
-//                        .authenticationEntryPoint(customAuthenticationEntryPoint)
-//                )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/", true)
                         .userInfoEndpoint(userInfo -> userInfo

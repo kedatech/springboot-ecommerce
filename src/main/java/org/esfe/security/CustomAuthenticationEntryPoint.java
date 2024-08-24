@@ -39,7 +39,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         }
 
         System.out.println(isAdmin);
-        if (uri.startsWith("/user/manage")) {
+        if (uri.contains("/manage")) {
             if(isAdmin){
                 response.sendRedirect("user/manage");
                 return;
