@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Setter
 @Getter
@@ -20,9 +21,10 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    // Si en el futuro decides utilizar una categoría, puedes descomentar estas líneas
+    // @ManyToOne
+    // @JoinColumn(name = "category_id", nullable = true)
+    // private Category category;
 
     @Column(nullable = false)
     private String name;
@@ -35,9 +37,23 @@ public class Product {
     @Column(nullable = false)
     private int stock;
 
+    private boolean active;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = true)
     private Timestamp updatedAt;
+
+    // Uso de @PrePersist para inicializar createdAt y updatedAt cuando se crea el producto
+    @PrePersist
+    protected void onCreate() {
+        Timestamp now = Timestamp.from(Instant.now());
+        this.createdAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = Timestamp.from(Instant.now());
+    }
 }

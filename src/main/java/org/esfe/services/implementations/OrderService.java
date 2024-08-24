@@ -3,6 +3,7 @@ package org.esfe.services.implementations;
 import org.esfe.models.Order;
 import org.esfe.models.OrderItem;
 import org.esfe.models.User;
+import org.esfe.models.enums.OrderStatus;
 import org.esfe.repository.IOrderItemRepository;
 import org.esfe.repository.IOrderRepository;
 import org.esfe.repository.IUserRepository;
@@ -28,7 +29,7 @@ public class OrderService implements IOrderService {
         Order order = new Order();
         order.setUser(user);
         order.setOrderItems (orderItems);
-        order.setStatus("ACTIVE");
+        order.setStatus(OrderStatus.PENDING);
 
         double totalAmount = 0;
         for (OrderItem orderItem : orderItems) {
