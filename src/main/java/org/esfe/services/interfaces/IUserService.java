@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface IUserService {
 
+    Optional<User> buscarPorGoogleId(String googleId);
+    
     Page<User> buscarTodosPaginados(Pageable pageable);
 
     List<User> obtenerTodos();

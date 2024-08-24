@@ -3,6 +3,7 @@ package org.esfe.controllers;
 import org.esfe.models.User;
 import org.esfe.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,22 @@ public class UserController {
             return "user/detail";
         } else {
             return "redirect:/user";
+        }
+    }
+
+    @GetMapping("/me")
+    public Object getUserByGoogleId(OAuth2AuthenticationToken authentication, Model model) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            String googleId = (String) authentication.getPrincipal().getAttributes().get("sub"); // Obtén el ID del usuario desde el token
+            Optional<User> user = userService.buscarPorGoogleId(googleId); // Necesitarás implementar este método en tu servicio
+            if (user.isPresent()) {
+                model.addAttribute("user", user.get());
+                return "user/me";
+            } else {
+                return "redirect:/home/index";
+            }
+        } else {
+            return "redirect:/login"; // Redirige al login si no está autenticado
         }
     }
 

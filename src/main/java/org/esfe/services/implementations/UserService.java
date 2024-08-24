@@ -16,6 +16,10 @@ public class UserService  implements IUserService {
 
     @Autowired
     private IUserRepository userRepository;
+    
+    public Optional<User> buscarPorGoogleId(String googleId) {
+        return userRepository.findByGoogleId(googleId);
+    }
     @Override
     public Page<User> buscarTodosPaginados(Pageable pageable) {
         return userRepository.findAll(pageable);
