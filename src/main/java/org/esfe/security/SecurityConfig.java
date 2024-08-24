@@ -40,9 +40,9 @@ public class SecurityConfig {
                         .requestMatchers("/security/**", "/login/**", "/logout", "/oauth2/**", "/", "/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                // .exceptionHandling(e -> e
-                //         .authenticationEntryPoint(customAuthenticationEntryPoint)
-                // )
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/", true)
                         .userInfoEndpoint(userInfo -> userInfo
