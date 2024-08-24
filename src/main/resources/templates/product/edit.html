@@ -1,9 +1,9 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{layouts/adminLayout}">
 
-<div layout:fragment="content">
+<div layout:fragment="admin-content">
     <h1>Editar Producto</h1>
     <form th:action="@{/products/save}" th:object="${product}" method="post">
         <input type="hidden" th:field="*{id}">
