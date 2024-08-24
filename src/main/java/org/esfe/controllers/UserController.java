@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -32,7 +32,7 @@ public class UserController {
             model.addAttribute("usuario", user.get());
             return "user/detail";
         } else {
-            return "redirect:/user";
+            return "redirect:/users";
         }
     }
 
@@ -78,14 +78,14 @@ public class UserController {
     @PostMapping("/save")
     public String saveUser(@ModelAttribute("user") User user) {
         userService.createOEditar(user);
-        return "redirect:/user";
+        return "redirect:/users";
     }
 
     @PostMapping("/saveadmin")
     public String saveAdminUser(@ModelAttribute("user") User user) {
         user.setAdmin(true);
         userService.createOEditar(user);
-        return "redirect:/user";
+        return "redirect:/users";
     }
     @GetMapping("/edit/{id}")
     public String editUserForm(@PathVariable Integer id, Model model) {
@@ -94,7 +94,7 @@ public class UserController {
             model.addAttribute("user", user.get());
             return "user/form";
         } else {
-            return "redirect:/user";
+            return "redirect:/users";
         }
     }
 
@@ -106,19 +106,19 @@ public class UserController {
             return "user/detail";
         }
 
-        return "redirect:/user";
+        return "redirect:/users";
     }
 
     @PostMapping("/update/{id}")
     public String updateUser(@PathVariable Integer id, @ModelAttribute("user") User user) {
         user.setId(id);
         userService.createOEditar(user);
-        return "redirect:/user";
+        return "redirect:/users";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable Integer id) {
         userService.eliminarPorId(id);
-        return "redirect:/user";
+        return "redirect:/users";
     }
 }
