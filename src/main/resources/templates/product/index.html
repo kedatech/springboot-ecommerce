@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html 
-lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/adminLayout}"
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/adminLayout}"
+  class="bg-gray-100"
 >
 
-<div layout:fragment="admin-content">
+<div layout:fragment="admin-content" class="p-4 sm:ml-64">
     <!-- Mostrar mensaje de confirmación en caso de éxito -->
     <div th:if="${msg != null}">
-        <script>
+        <script th:inline="javascript">
             Swal.fire({
                 title: "Confirmación",
-                text: '[[${msg}]]',
+                text: /*[[${msg}]]*/ '',
                 icon: "success"
             });
         </script>
@@ -20,49 +21,56 @@ lang="en"
 
     <!-- Mostrar mensaje de error en caso de error -->
     <div th:if="${error != null}">
-        <script>
+        <script th:inline="javascript">
             Swal.fire({
                 title: "Error",
-                text: '[[${error}]]',
+                text: /*[[${error}]]*/ '',
                 icon: "error"
             });
         </script>
     </div>
 
-    <h1>Listado de Productos</h1>
-    <a th:href="@{/products/create}" class="btn btn-outline-primary">Nuevo Producto</a>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Fecha de Creación</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="product : ${products}">
-            <td th:text="${product.id}"></td>
-            <td th:text="${product.name}"></td>
-            <td th:text="${product.description}"></td>
-            <td th:text="${product.price}"></td>
-            <td th:text="${product.stock}"></td>
-            <td th:text="${#dates.format(product.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
-            <td>
-                <a th:href="@{/products/details/{id} (id = ${product.id})}" class="btn btn-outline-secondary">Detalles</a>
-                <a th:href="@{/products/edit/{id} (id = ${product.id})}" class="btn btn-outline-info">Editar</a>
-                <a th:href="@{/products/remove/{id} (id = ${product.id})}" class="btn btn-outline-danger">Eliminar</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">Listado de Productos</h1>
+    <a th:href="@{/products/create}" class="inline-block mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">Nuevo Producto</a>
+    
+    <div class="overflow-x-auto bg-white rounded-lg shadow">
+        <table class="w-full table-auto">
+            <thead class="bg-gray-200 text-gray-700">
+                <tr>
+                    <th class="px-4 py-3 text-left">ID</th>
+                    <th class="px-4 py-3 text-left">Nombre</th>
+                    <th class="px-4 py-3 text-left">Descripción</th>
+                    <th class="px-4 py-3 text-left">Price</th>
+                    <th class="px-4 py-3 text-left">Stock</th>
+                    <th class="px-4 py-3 text-left">Fecha de Creación</th>
+                    <th class="px-4 py-3 text-left">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-600">
+                <tr th:each="product : ${products}" class="border-b border-gray-200 hover:bg-gray-100">
+                    <td class="px-4 py-3" th:text="${product.id}"></td>
+                    <td class="px-4 py-3" th:text="${product.name}"></td>
+                    <td class="px-4 py-3" th:text="${product.description}"></td>
+                    <td class="px-4 py-3" th:text="${product.price}"></td>
+                    <td class="px-4 py-3" th:text="${product.stock}"></td>
+                    <td class="px-4 py-3" th:text="${#dates.format(product.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td class="px-4 py-3">
+                        <a th:href="@{/products/details/{id} (id = ${product.id})}" class="text-blue-500 hover:text-blue-700 mr-2">Detalles</a>
+                        <a th:href="@{/products/edit/{id} (id = ${product.id})}" class="text-green-500 hover:text-green-700 mr-2">Editar</a>
+                        <a th:href="@{/products/remove/{id} (id = ${product.id})}" class="text-red-500 hover:text-red-700">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item" th:each="pageNumber : ${pageNumbers}">
-                <a class="page-link" th:href="@{|/products?page=${pageNumber}|}" th:text="${pageNumber}"></a>
+    <nav aria-label="Page navigation" class="mt-6">
+        <ul class="flex justify-center">
+            <li th:each="pageNumber : ${pageNumbers}" class="mx-1">
+                <a th:href="@{|/products?page=${pageNumber}|}" 
+                   th:text="${pageNumber}"
+                   class="px-3 py-2 bg-white text-blue-500 border border-gray-300 rounded hover:bg-blue-500 hover:text-white transition duration-300">
+                </a>
             </li>
         </ul>
     </nav>
