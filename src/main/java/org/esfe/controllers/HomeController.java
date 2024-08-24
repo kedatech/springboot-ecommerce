@@ -14,6 +14,8 @@ public class HomeController {
     public String index(OAuth2AuthenticationToken authentication, Model model) {
         if (authentication != null && authentication.isAuthenticated()) {
             String username = (String) authentication.getPrincipal().getAttributes().get("name");
+            // imprimir el nombre del usuario en la consola
+            System.out.println("Usuario autenticado: " + username);
             model.addAttribute("username", username);
         } else {
             model.addAttribute("username", "");
@@ -25,11 +27,7 @@ public class HomeController {
     @GetMapping("/healthcheck")
     @ResponseBody
     public Object healthcheck(){
-        Object response = new Object(){
-            public String status = "ok";
-        };
-
-        return response;
+        return "ok";
     }
 }
 

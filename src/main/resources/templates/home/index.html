@@ -8,25 +8,24 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <title>Title</title>
     <script>
-        function getGreeting(username) {
+        function getGreeting() {
             const now = new Date();
             const hours = now.getHours();
             let greeting;
 
             if (hours < 12) {
-                greeting = "Buenos días";
+                greeting = "buenos días";
             } else if (hours < 18) {
-                greeting = "Buenas tardes";
+                greeting = "buenas tardes";
             } else {
-                greeting = "Buenas noches";
+                greeting = "buenas noches";
             }
 
-            return `${greeting}, ${username}`;
+            return greeting;
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            const username = /*[[${username}]]*/ 'usuario';
-            document.getElementById("greeting").innerText = getGreeting(username);
+            document.getElementById("greeting").innerText = getGreeting();
         });
     </script>
 </head>
@@ -40,7 +39,11 @@
         </span>
         <input class="w-full border rounded-md pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:shadow-outline" type="text" placeholder="Search">
     </div>
-    <h1 class="text-center"><span id="greeting"></span>!</h1>
+    <h1 class="text-center">
+        Hola,
+        <span id="greeting"></span> 
+        <span th:text="${username}"></span>
+    </h1>
 </div>
 </body>
 </html>
