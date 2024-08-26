@@ -2,9 +2,7 @@ package org.esfe.services.implementations;
 
 import org.esfe.models.OrderItem;
 import org.esfe.repository.IOrderItemRepository;
-import org.esfe.repository.IUserRepository;
 import org.esfe.services.interfaces.IOrderItemService;
-import org.esfe.services.interfaces.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
