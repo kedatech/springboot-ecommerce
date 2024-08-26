@@ -53,15 +53,15 @@ public class AdminAuthorizationFilter implements Filter {
         }
 
 
-        if (adminOnlyRoutes.contains(uri)) {
-            if (!isAuthenticated) {
-                httpResponse.sendRedirect("/oauth2/authorization/google");
-                return;
-            } else if (!isAdmin) {
-                httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-                return;
-            }
-        }
+//        if (adminOnlyRoutes.contains(uri)) {
+//            if (!isAuthenticated) {
+//                httpResponse.sendRedirect("/oauth2/authorization/google");
+//                return;
+//            } else if (!isAdmin) {
+//                httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+//                return;
+//            }
+//        }
 
 
         chain.doFilter(request, response);
