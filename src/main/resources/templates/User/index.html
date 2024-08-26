@@ -1,45 +1,72 @@
 <!DOCTYPE html>
 <html
-lang="es"
-xmlns:th="http://www.thymeleaf.org"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="~{layouts/adminLayout}"
+        lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/adminLayout}"
+        class="bg-gray-100"
 >
-<head>
-    <meta charset="UTF-8">
-    <title>Usuarios</title>
-<!--    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">-->
-</head>
-<body>
 
-<div layout:fragment="admin-content" class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-4">Usuarios</h2>
-    <a href="/user/create" class="p-3 mb-4 inline-block rounded-sm bg-green-600 text-white">Crear nuevo</a>
 
-    <table class="min-w-full bg-white">
-        <thead>
-        <tr>
-            <th class="py-2 px-4 border-b border-gray-200">ID</th>
-            <th class="py-2 px-4 border-b border-gray-200">Email</th>
-            <th class="py-2 px-4 border-b border-gray-200">Is Admin</th>
-            <th class="py-2 px-4 border-b border-gray-200">Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="user : ${users}">
-            <td class="py-2 px-4 border-b border-gray-200" th:text="${user.id}"></td>
-            <td class="py-2 px-4 border-b border-gray-200" th:text="${user.email}"></td>
-            <td class="py-2 px-4 border-b border-gray-200" th:text="${user.isAdmin}"></td>
-            <td class="py-2 px-4 border-b border-gray-200">
-                <a th:href="@{'/users/' + ${user.id}}" class="text-blue-500 hover:text-blue-700">Ver</a> |
-                <a th:href="@{'/users/edit/' + ${user.id}}" class="text-yellow-500 hover:text-yellow-700">Editar</a> |
-                <a th:href="@{'/users/delete/' + ${user.id}}" class="text-red-500 hover:text-red-700"
-                   onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">Eliminar</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<div layout:fragment="admin-content" class="p-4 sm:ml-64">
+
+    <!-- Mostrar mensaje de confirmación en caso de éxito -->
+    <div th:if="${msg != null}">
+        <script th:inline="javascript">
+            Swal.fire({
+                title: "Confirmación",
+                text: /*[[${msg}]]*/ '',
+                icon: "success"
+            });
+        </script>
+    </div>
+
+    <!-- Mostrar mensaje de error en caso de error -->
+    <div th:if="${error != null}">
+        <script th:inline="javascript">
+            Swal.fire({
+                title: "Error",
+                text: /*[[${error}]]*/ '',
+                icon: "error"
+            });
+        </script>
+    </div>
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">Listado de Usuarios</h1>
+    <a th:href="@{/users/create}" class="inline-block mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">Crear usuario admin</a>
+
+    <div class="overflow-x-auto bg-white rounded-lg shadow">
+        <table class="w-full table-auto">
+            <thead class="bg-gray-200 text-gray-700">
+            <tr>
+                <th class="px-4 py-3 text-left">ID</th>
+                <th class="px-4 py-3 text-left">Nombre</th>
+                <th class="px-4 py-3 text-left">Email</th>
+                <th class="px-4 py-3 text-left">Es Admin</th>
+                <th class="px-4 py-3 text-left">Google Linked</th>
+                <th class="px-4 py-3 text-left">Fecha de Creación</th>
+                <th class="px-4 py-3 text-left">Acciones</th>
+            </tr>
+            </thead>
+            <tbody class="text-gray-600">
+            <tr th:each="user : ${users}" class="border-b border-gray-200 hover:bg-gray-100">
+                <td class="px-4 py-3" th:text="${user.id}"></td>
+                <td class="px-4 py-3" th:text="${user.name}"></td>
+                <td class="px-4 py-3" th:text="${user.email}"></td>
+                <td class="px-4 py-3" th:text="${user.isAdmin}"></td>
+                <td th:if="${user.googleId}" class="px-4 py-3">Si</td>
+                <td th:unless="${user.googleId}" class="px-4 py-3">No</td>
+                <td class="px-4 py-3" th:text="${#dates.format(user.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                <td class="px-4 py-3">
+<!--                    <a th:href="@{/users/edit/{id} (id = ${user.id})}" class="text-green-500 hover:text-green-700 mr-2">Editar</a>-->
+                    <a th:href="@{/users/delete/{id} (id = ${user.id})}" class="text-red-500 hover:text-red-700">Eliminar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
 </div>
 
-</body>
 </html>

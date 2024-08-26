@@ -18,7 +18,7 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @GetMapping("/manage")
+    @GetMapping
     public String listUsers(Model model) {
         List<User> users = userService.obtenerTodos();
         model.addAttribute("users", users);

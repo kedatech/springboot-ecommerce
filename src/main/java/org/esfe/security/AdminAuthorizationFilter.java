@@ -17,6 +17,8 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -38,6 +40,7 @@ public class AdminAuthorizationFilter implements Filter {
         String uri = httpRequest.getRequestURI();
         boolean isAdmin = false;
         boolean isAuthenticated = false;
+        List<String> adminOnlyRoutes = Arrays.asList("/users", "/products");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -50,7 +53,7 @@ public class AdminAuthorizationFilter implements Filter {
         }
 
 
-        if (uri.startsWith("/user/manage")) {
+        if (adminOnlyRoutes.contains(uri)) {
             if (!isAuthenticated) {
                 httpResponse.sendRedirect("/oauth2/authorization/google");
                 return;
