@@ -54,6 +54,7 @@ public class AdminAuthorizationFilter implements Filter {
 
         if (adminOnlyRoutes.contains(uri)) {
             if (!isAuthenticated) {
+                System.out.println("No authenticated, redirect to google");
                 httpResponse.sendRedirect("/oauth2/authorization/google");
                 return;
             } else if (!isAdmin) {
