@@ -40,7 +40,7 @@ public class AdminAuthorizationFilter implements Filter {
         String uri = httpRequest.getRequestURI();
         boolean isAdmin = false;
         boolean isAuthenticated = false;
-        List<String> adminOnlyRoutes = Arrays.asList("/users", "/products");
+        List<String> adminOnlyRoutes = Arrays.asList("/user", "/products");
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
