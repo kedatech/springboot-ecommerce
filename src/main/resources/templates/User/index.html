@@ -52,7 +52,7 @@
                 <td class="px-4 py-3" th:text="${user.id}"></td>
                 <td class="px-4 py-3" th:text="${user.name}"></td>
                 <td class="px-4 py-3" th:text="${user.email}"></td>
-                <td class="px-4 py-3" th:text="${user.isAdmin}"></td>
+                <td class="px-4 py-3" th:text="${user.admin}"></td>
                 <td th:if="${user.googleId}" class="px-4 py-3">Si</td>
                 <td th:unless="${user.googleId}" class="px-4 py-3">No</td>
                 <td class="px-4 py-3" th:text="${#dates.format(user.createdAt, 'dd/MM/yyyy HH:mm')}"></td>

@@ -69,6 +69,13 @@ public class UserController {
         }
     }
 
+    @GetMapping("/all")
+    @ResponseBody
+    public List<User> getAllUsers() {
+        return userService.obtenerTodos();
+    }
+
+
     @GetMapping("/create")
     public String createUserForm(Model model) {
         model.addAttribute("user", new User());
