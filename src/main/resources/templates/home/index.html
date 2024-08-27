@@ -1,11 +1,20 @@
-<!DOCTYPE html>
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/userLayout}">
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/userLayout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <title>Ecommerce</title>
+    <style>
+        .product-container {
+            overflow-x: auto; /* Permitir el desplazamiento horizontal */
+            white-space: nowrap; /* Evitar el salto de línea en los productos */
+        }
+
+        .product-card {
+            display: inline-block; /* Mantener las tarjetas en línea */
+            margin-right: 0; /* Sin margen entre tarjetas */
+            margin-left: 0; /* Sin margen entre tarjetas */
+        }
+    </style>
     <script>
         function getGreeting() {
             const now = new Date();
@@ -30,19 +39,103 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="relative mt-6 max-w-lg mx-auto">
-        <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
-            <svg class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none">
-                <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </span>
-        <input class="w-full border rounded-md pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:shadow-outline" type="text" placeholder="Search">
+    <div class="mt-6 text-center">
+        <h1>Hola, <span id="greeting"></span> <span th:text="${username}"></span></h1>
     </div>
-    <h1 class="text-center">
-        Hola,
-        <span id="greeting"></span> 
-        <span th:text="${username}"></span>
-    </h1>
+
+    <div class="relative mx-auto mt-6 max-w-lg">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+          <svg class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none">
+            <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <input class="focus:shadow-outline w-full rounded-md border py-2 pl-10 pr-4 focus:border-blue-500 focus:outline-none" type="text" placeholder="Search" />
+    </div>
+
+    <!-- Contenedor principal de productos -->
+    <div>
+        <div class="text-center">
+            <h1 class="mt-3 text-2xl font-extrabold text-gray-800">Productos de la semana</h1>
+            <p class="text-slate-800">Los productos más vendidos de la semana</p>
+        </div>
+        <div class="product-container mx-auto mt-4 max-w-6xl">
+            <!-- Repetir esta tarjeta para cada producto -->
+            <div class="product-card relative mx-1 my-3 min-w-[200px] max-w-sm cursor-pointer rounded-2xl bg-white p-2 shadow-md transition-all duration-300 hover:shadow-xl">
+                <div class="relative overflow-x-hidden rounded-2xl">
+                    <img class="h-40 w-full rounded-2xl object-cover" src="https://pixahive.com/wp-content/uploads/2020/10/Gym-shoes-153180-pixahive.jpg" />
+                    <p class="group absolute right-2 top-2 cursor-pointer rounded-full bg-white p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-70 group-hover:opacity-50" fill="none" viewBox="0 0 24 24" stroke="black">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </p>
+                </div>
+                <div class="mb-2 mt-4 flex justify-between pl-2">
+                    <div>
+                        <p class="mb-0 text-lg font-semibold text-gray-900">Product Name</p>
+                        <p class="text-md mt-0 text-gray-800">$340</p>
+                    </div>
+                    <div class="group mb-1 mr-4 flex cursor-pointer flex-col-reverse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:opacity-70" fill="none" viewBox="0 0 24 24" stroke="gray">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <!-- Fin de la tarjeta de producto -->
+            </div>
+            <!-- Repetir más tarjetas de productos aquí -->
+        </div>
+    </div>
+
+    <!-- Productos Gamers y Hogar -->
+    <div class="mx-2 mt-4 grid grid-cols-2 gap-4">
+        <!-- Productos Gamers -->
+        <div class="rounded-md bg-blue-200 p-4 shadow-xl">
+            <div class="text-center">
+                <h1 class="mt-3 text-xl font-extrabold text-gray-800">Tu lado gamer</h1>
+                <p class="text-sm text-slate-800">Los mejores productos gamers del mercado</p>
+            </div>
+            <div class="product-container mx-auto mt-4 max-w-6xl">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+                    <!-- Repetir esta tarjeta para cada producto -->
+                    <div class="product-card relative mx-1 my-2 min-w-[150px] max-w-sm cursor-pointer rounded-lg bg-white p-2 shadow-md transition-all duration-300 hover:shadow-xl">
+                        <div class="relative overflow-x-hidden rounded-lg">
+                            <img class="h-32 w-full rounded-lg object-cover" src="https://i.blogs.es/e1e1dc/41tysnbsxzl._sl500_/original.webp" />
+                        </div>
+                        <div class="mb-2 mt-2 flex justify-between pl-2">
+                            <div>
+                                <p class="mb-0 text-xs font-semibold text-gray-900">Teclado gamer pro master</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Repetir más tarjetas de productos aquí -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Productos para el Hogar -->
+        <div class="rounded-md bg-red-200 p-4 shadow-xl">
+            <div class="text-center">
+                <h1 class="mt-3 text-xl font-extrabold text-gray-800">Lo mejor para la casa</h1>
+                <p class="text-sm text-slate-800">Los mejores productos para tu hogar</p>
+            </div>
+            <div class="product-container mx-auto mt-4 max-w-6xl">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+                    <!-- Repetir esta tarjeta para cada producto -->
+                    <div class="product-card relative mx-1 my-2 min-w-[150px] max-w-sm cursor-pointer rounded-lg bg-white p-2 shadow-md transition-all duration-300 hover:shadow-xl">
+                        <div class="relative overflow-x-hidden rounded-lg">
+                            <img class="h-32 w-full rounded-lg object-cover" src="https://sv.epaenlinea.com/media/catalog/product/cache/e28d833c75ef32af78ed2f15967ef6e0/b/6/b66fc4be-9db1-418e-826c-39ae7df9a210.jpg" />
+                        </div>
+                        <div class="mb-2 mt-2 flex justify-between pl-2">
+                            <div>
+                                <p class="mb-0 text-xs font-semibold text-gray-900">Lámpara de mesa LED</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Repetir más tarjetas de productos aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

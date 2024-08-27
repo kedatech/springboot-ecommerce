@@ -102,7 +102,7 @@ public class UserController {
             existingUser.setAdmin(user.isAdmin());
             userService.createOEditar(existingUser);
         } else {
-            return "neles pasteles";
+            return "redirect:/error"; //enviar a una ruta de error :V
         }
 
         return "redirect:/users";
