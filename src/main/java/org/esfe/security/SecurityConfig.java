@@ -1,6 +1,5 @@
 package org.esfe.security;
 
-import org.esfe.security.CustomAuthenticationEntryPoint;
 import org.esfe.services.implementations.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,12 +22,10 @@ import java.util.Map;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final UserService userService;
 
     @Autowired
-    public SecurityConfig(CustomAuthenticationEntryPoint customAuthenticationEntryPoint, UserService userService) {
-        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+    public SecurityConfig(UserService userService) {
         this.userService = userService;
     }
 
@@ -38,9 +35,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/security/**", "/login/**", "/logout", "/oauth2/**", "/", "/css/**", "/js/**", "/images/**", "/upload/**").permitAll()
                         .anyRequest().authenticated()
-                )
-                .exceptionHandling(e -> e
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/", true)
@@ -59,7 +53,6 @@ public class SecurityConfig {
                         .ignoringRequestMatchers("/upload/**") // Desactivar CSRF para las rutas de subida
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
-
         return http.build();
     }
 
@@ -77,5 +70,4 @@ public class SecurityConfig {
             }
         };
     }
-
 }

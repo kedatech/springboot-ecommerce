@@ -25,17 +25,6 @@ public class UserController {
         return "user/index";
     }
 
-    @GetMapping("/{id}")
-    public String getUserById(@PathVariable Integer id, Model model) {
-        Optional<User> user = userService.buscarPorId(id);
-        if (user.isPresent()) {
-            model.addAttribute("usuario", user.get());
-            return "user/detail";
-        } else {
-            return "redirect:/users";
-        }
-    }
-
     @GetMapping("/me")
     public Object getUserByGoogleId(OAuth2AuthenticationToken authentication, Model model) {
         if (authentication != null && authentication.isAuthenticated()) {
@@ -69,6 +58,13 @@ public class UserController {
         }
     }
 
+    @GetMapping("/all")
+    @ResponseBody
+    public List<User> getAllUsers() {
+        return userService.obtenerTodos();
+    }
+
+
     @GetMapping("/create")
     public String createUserForm(Model model) {
         model.addAttribute("user", new User());
@@ -92,29 +88,26 @@ public class UserController {
         Optional<User> user = userService.buscarPorId(id);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
-            return "user/form";
+            return "user/edit";
         } else {
             return "redirect:/users";
         }
     }
 
-    @GetMapping("/details/{id}")
-    public String details(@PathVariable("id") Integer id, Model model){
-        Optional<User> user = userService.buscarPorId(id);
-        if(user.isPresent()){
-            model.addAttribute("user", user.get());
-            return "user/detail";
+    @PostMapping("/update/{id}")
+    public String updateUser(@PathVariable Integer id, @ModelAttribute("user") User user) {
+        Optional<User> existentUser = userService.buscarPorId(id);
+        if (existentUser.isPresent()) {
+            User existingUser = existentUser.get();
+            existingUser.setAdmin(user.isAdmin());
+            userService.createOEditar(existingUser);
+        } else {
+            return "redirect:/error"; //enviar a una ruta de error :V
         }
 
         return "redirect:/users";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable Integer id, @ModelAttribute("user") User user) {
-        user.setId(id);
-        userService.createOEditar(user);
-        return "redirect:/users";
-    }
 
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable Integer id) {

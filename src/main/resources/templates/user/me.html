@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html
-    lang="es"
-    xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layouts/userLayout}"
+        lang="es"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/userLayout}"
 >
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
 <div layout:fragment="content" class="bg-gray-100 flex items-center justify-center h-full">
@@ -22,7 +21,7 @@
             <span class="text-gray-700" th:text="${user.email}">user@example.com</span>
         </div>
         <div class="mb-4">
-            <span th:if="${user.admin}" class="bg-green-500 text-white px-2 py-1 rounded">Esta cuenta es administradora</span>
+            <span th:if="${user.admin}" class="bg-green-500 text-white px-2 py-1 rounded">Este usuario es Administrador</span>
         </div>
         <div class="mb-4">
             <span class="block text-sm font-medium text-gray-600">Created At:</span>

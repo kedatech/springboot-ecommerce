@@ -59,7 +59,7 @@ public class UserService  implements IUserService {
 
             if (userByEmail.isPresent()) {
                 User user = userByEmail.get();
-                if ((user.getGoogleId() == null || user.getGoogleId().isEmpty()) && user.isAdmin()) {
+                if (user.getGoogleId() == null || user.getGoogleId().isEmpty()) {
                     user.setGoogleId(googleId);
                     user.setName(oAuth2User.getAttribute("name"));
                     return userRepository.save(user);
