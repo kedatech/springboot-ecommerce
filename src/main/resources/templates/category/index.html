@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/adminLayout}"
+        class="bg-gray-100">
+
+<div layout:fragment="admin-content" class="p-4 sm:ml-64">
+
+    <!-- Mostrar mensaje de confirmación en caso de éxito -->
+    <div th:if="${msg != null}">
+        <script th:inline="javascript">
+            Swal.fire({
+                title: "Confirmación",
+                text: /*[[${msg}]]*/ '',
+                icon: "success"
+            });
+        </script>
+    </div>
+
+    <!-- Mostrar mensaje de error en caso de error -->
+    <div th:if="${error != null}">
+        <script th:inline="javascript">
+            Swal.fire({
+                title: "Error",
+                text: /*[[${error}]]*/ '',
+                icon: "error"
+            });
+        </script>
+    </div>
+
+    <body class="bg-gray-100">
+
+    <!-- Header -->
+    <header class="bg-blue-600 p-6 text-white text-center">
+        <h1 class="text-3xl font-bold">Categories</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main class="p-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
+            <!-- Category Card 1 -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <img src="https://via.placeholder.com/300x200" alt="Category Image" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Category 1</h2>
+                    <p class="text-gray-600 mt-2">Short description of the category.</p>
+                    <a href="#" class="block mt-4 text-blue-600 hover:underline">See More</a>
+                </div>
+            </div>
+
+            <!-- Category Card 2 -->
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <img src="https://via.placeholder.com/300x200" alt="Category Image" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Category 2</h2>
+                    <p class="text-gray-600 mt-2">Short description of the category.</p>
+                    <a href="#" class="block mt-4 text-blue-600 hover:underline">See More</a>
+                </div>
+            </div>
+
+            <!-- Additional category cards can be added here in the same format -->
+
+        </div>
+    </main>
+
+    </body>
+
+
+</div>
+</html>
