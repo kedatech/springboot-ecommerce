@@ -25,6 +25,38 @@ public class OrderService implements IOrderService {
 
     private IOrderItemRepository orderItemRepository;
 
+    @Override
+    public boolean deleteItemFromOrder(Integer orderId, Integer itemId) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+
+        if (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
+            List<OrderItem> orderItems = order.getOrderItems();
+
+            // Encuentra el ítem a eliminar
+            Optional<OrderItem> itemToDeleteOptional = orderItems.stream()
+                    .filter(item -> Integer.valueOf(item.getId()).equals(itemId))
+                    .findFirst();
+
+            if (itemToDeleteOptional.isPresent()) {
+                OrderItem itemToDelete = itemToDeleteOptional.get();
+
+                // Elimina el ítem de la orden y actualiza el total
+                orderItems.remove(itemToDelete);
+                order.setOrderItems(orderItems);
+                order.setTotalAmount(order.getTotalAmount() - (itemToDelete.getPrice() * itemToDelete.getQuantity()));
+
+                // Guarda la orden actualizada
+                orderRepository.save(order);
+                orderItemRepository.deleteById(itemId);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
     public Order createOrder(User user, List<OrderItem> orderItems) {
         Order order = new Order();
         order.setUser(user);
@@ -91,60 +123,37 @@ public class OrderService implements IOrderService {
         return null; // Retornar nulo si la orden no existe
     }
 
+
     @Override
-    public boolean deleteItemFromOrder(Integer orderId, Integer itemId) {
-        // Buscar la orden por ID
+    public OrderItem updateItemInOrder(Integer orderId, Integer itemId, OrderItem updatedItem) {
+        // Implementación del método
         Optional<Order> order = orderRepository.findById(orderId);
 
         if (order.isPresent()) {
             Order existingOrder = order.get();
-            // Buscar el ítem dentro de la orden
-            Optional<OrderItem> itemToRemove = existingOrder.getOrderItems().stream()
+
+            Optional<OrderItem> itemToUpdate = existingOrder.getOrderItems().stream()
                     .filter(item -> item.getId() == itemId)  // Compara con el valor primitivo
                     .findFirst();
 
-            if (itemToRemove.isPresent()) {
-                existingOrder.getOrderItems().remove(itemToRemove.get());
-                orderItemRepository.delete(itemToRemove.get());
-                orderRepository.save(existingOrder);
-                return true;
+            if (itemToUpdate.isPresent()) {
+                OrderItem item = itemToUpdate.get();
+
+                // Actualiza los campos del item
+                item.setProduct(updatedItem.getProduct());
+                item.setPrice(updatedItem.getPrice());
+                item.setQuantity(updatedItem.getQuantity());
+
+                orderItemRepository.save(item);
+                return item;
             }
         }
 
-        return false; // Retorna false si la orden no existe o el ítem no se encuentra
+        return null; // Retornar nulo si la orden no existe o el ítem no se encuentra
     }
 
 
-    // @Override
-    // public OrderItem updateItemInOrder(Integer orderId, Integer itemId, OrderItem updatedItem) {
-    //     // Buscar la orden por ID
-    //     Optional<Order> order = orderRepository.findById(orderId);
 
-    //     if (order.isPresent()) {
-    //         Order existingOrder = order.get();
-
-    //         // Buscar el ítem dentro de la orden
-    //         Optional<OrderItem> itemToUpdate = existingOrder.getOrderItems().stream()
-    //                 .filter(item -> item.getId().equals(itemId))
-    //                 .findFirst();
-
-    //         if (itemToUpdate.isPresent()) {
-    //             OrderItem item = itemToUpdate.get();
-
-    //             // Actualizar el ítem con los nuevos valores
-    //             item.setame(updatedItem.getName());
-    //             item.setPrice(updatedItem.getPrice());
-    //             item.setQuantity(updatedItem.getQuantity());
-    //             // Puedes actualizar otros campos según tu entidad OrderItem
-
-    //             // Guardar el ítem actualizado
-    //             orderItemRepository.save(item);
-    //             return item;
-    //         }
-    //     }
-
-    //     throw new ResourceNotFoundException("Order or Item not found"); // Lanza una excepción si no se encuentra la orden o el ítem
-    // }
 
     @Override
     public Page<Order> buscarTodosPaginados(Pageable pageable) {

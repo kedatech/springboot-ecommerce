@@ -1,7 +1,5 @@
 package org.esfe.security;
 
-import org.esfe.models.User;
-import org.esfe.security.CustomAuthenticationEntryPoint;
 import org.esfe.services.implementations.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,8 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -24,12 +22,10 @@ import java.util.Map;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final UserService userService;
 
     @Autowired
-    public SecurityConfig(CustomAuthenticationEntryPoint customAuthenticationEntryPoint, UserService userService) {
-        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+    public SecurityConfig(UserService userService) {
         this.userService = userService;
     }
 
@@ -37,11 +33,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/security/**", "/login/**", "/logout", "/oauth2/**", "/", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/security/**", "/login/**", "/logout", "/oauth2/**", "/", "/css/**", "/js/**", "/images/**", "/upload/**").permitAll()
                         .anyRequest().authenticated()
-                )
-                .exceptionHandling(e -> e
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/", true)
@@ -57,9 +50,9 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                 )
                 .csrf(c -> c
+                        .ignoringRequestMatchers("/upload/**") // Desactivar CSRF para las rutas de subida
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
-
         return http.build();
     }
 
@@ -77,5 +70,4 @@ public class SecurityConfig {
             }
         };
     }
-
 }
