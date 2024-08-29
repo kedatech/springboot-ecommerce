@@ -1,51 +1,47 @@
+<!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/adminLayout}">
+      layout:decorate="~{layouts/adminLayout}"
+      class="bg-gray-100">
 
-<div layout:fragment="admin-content">
-    <h1>Editar Producto</h1>
-    <form th:action="@{/products/save}" th:object="${product}" method="post">
-        <input type="hidden" th:field="*{id}">
+<div layout:fragment="admin-content" class="p-4 sm:ml-64">
+    <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+        <h1 class="text-2xl font-semibold mb-6 text-gray-800">Editar Producto</h1>
+        <form th:action="@{/products/save}" th:object="${product}" method="post" class="space-y-6">
+            <input type="hidden" th:field="*{id}">
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="name">Nombre</label>
-                    <input type="text" class="form-control" th:field="*{name}" id="name" placeholder="Escriba el nombre del producto" required>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label for="name" class="text-sm font-medium text-gray-700">Nombre</label>
+                    <input type="text" th:field="*{name}" id="name" placeholder="Escriba el nombre del producto" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div class="space-y-2">
+                    <label for="description" class="text-sm font-medium text-gray-700">Descripción</label>
+                    <textarea th:field="*{description}" id="description" placeholder="Escriba la descripción del producto" required
+                              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-32"></textarea>
+                </div>
+                <div class="space-y-2">
+                    <label for="price" class="text-sm font-medium text-gray-700">Precio</label>
+                    <input type="number" step="0.01" th:field="*{price}" id="price" placeholder="Escriba el precio del producto" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div class="space-y-2">
+                    <label for="stock" class="text-sm font-medium text-gray-700">Stock</label>
+                    <input type="number" th:field="*{stock}" id="stock" placeholder="Escriba el stock del producto" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="description">Descripción</label>
-                    <textarea class="form-control" th:field="*{description}" id="description" placeholder="Escriba la descripción del producto" required></textarea>
-                </div>
+            <div class="flex justify-start space-x-4 mt-6">
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Guardar los cambios
+                </button>
+                <a th:href="@{/products}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                    Regresar
+                </a>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="price">Precio</label>
-                    <input type="number" step="0.01" class="form-control" th:field="*{price}" id="price" placeholder="Escriba el precio del producto" required>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="stock">Stock</label>
-                    <input type="number" class="form-control" th:field="*{stock}" id="stock" placeholder="Escriba el stock del producto" required>
-                </div>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Guardar los cambios</button>
-        <a th:href="@{/products}" class="btn btn-secondary">Regresar</a>
-    </form>
+        </form>
+    </div>
 </div>
 </html>

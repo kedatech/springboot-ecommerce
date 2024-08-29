@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -22,9 +24,12 @@ public class Product {
     private int id;
 
     // Si en el futuro decides utilizar una categoría, puedes descomentar estas líneas
-    // @ManyToOne
-    // @JoinColumn(name = "category_id", nullable = true)
-    // private Category category;
+     //@ManyToOne
+   // @JoinColumn(name = "category_id", nullable = true)
+   //  private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Image> images = new ArrayList<>();
 
     @Column(nullable = false)
     private String name;
