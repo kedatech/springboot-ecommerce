@@ -40,4 +40,5 @@ public class CategoryService implements ICategoryService {
     public void eliminarPorId(Integer id) {
         categoryRepository.deleteById(id);
     }
+
 }
