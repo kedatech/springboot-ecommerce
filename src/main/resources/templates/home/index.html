@@ -35,6 +35,119 @@
         document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("greeting").innerText = getGreeting();
         });
+
+        function addToCart(productName, quantity, price, stock, id) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let existingProduct = cart.find(item => item.name === productName);
+
+            if (existingProduct) {
+                if (existingProduct.stock - quantity >= 0) {
+                    existingProduct.quantity += quantity;
+                    existingProduct.stock -= quantity;
+
+                    /*if (existingProduct.stock === 0) {
+                        // Cambiar el estado a agotado
+                        document.getElementById(`price-text-${id}`).classList.add("hidden");
+                        document.getElementById(`price-text-agotado-${id}`).classList.remove("hidden");
+                        document.getElementById(`buy-icon-${id}`).classList.add("hidden");
+                    }*/
+                }
+            } else {
+                cart.push({ name: productName, quantity: quantity, price: price, stock: stock - quantity, landProductId: id });
+
+                /*if (stock - quantity === 0) {
+                    // Cambiar el estado a agotado
+                    document.getElementById(`price-text-${id}`).classList.add("hidden");
+                    document.getElementById(`price-text-agotado-${id}`).classList.remove("hidden");
+                    document.getElementById(`buy-icon-${id}`).classList.add("hidden");
+                }*/
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartView();
+        }
+
+
+        function updateCartView() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let cartContainer = document.getElementById('cart-items-container-child');
+            let totalCartPriceDOM = document.getElementById('total-cart');
+            let totalCartPrice = 0;
+            cartContainer.innerHTML = '';
+
+            if(cart.length == 0){
+                totalCartPriceDOM.innerHTML = '$0';
+            }
+            cart.forEach(item => {
+                totalCartPrice += (item.price * item.quantity);
+                totalCartPriceDOM.innerText = `Total: $${totalCartPrice}`;
+                if(item.stock === 0){
+                    document.getElementById(`price-text-${item.landProductId}`).classList.add("hidden");
+                    document.getElementById(`price-text-agotado-${item.landProductId}`).classList.remove("hidden");
+                    document.getElementById(`buy-icon-${item.landProductId}`).classList.add("hidden");
+                }
+                else{
+                    document.getElementById(`price-text-${item.landProductId}`).classList.remove("hidden");
+                    document.getElementById(`price-text-agotado-${item.landProductId}`).classList.add("hidden");
+                    document.getElementById(`buy-icon-${item.landProductId}`).classList.remove("hidden");
+                }
+                cartContainer.innerHTML += `
+                    <div class="flex justify-between mt-6">
+                        <div class="flex">
+                            <img class="h-20 w-20 object-cover rounded" src="https://via.placeholder.com/150" alt="Product Image">
+                            <div class="mx-3">
+                                <h3 class="text-sm text-gray-600">${item.name}</h3>
+                                <div class="flex items-center mt-2">
+                                    <button onclick="updateQuantity('${item.name}', -1, '${item.stock}', '${item.landProductId}')" class="text-gray-500 focus:outline-none">
+                                        <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    </button>
+                                    <span class="text-gray-700 mx-2">${item.quantity}</span>
+                                    <button onclick="updateQuantity('${item.name}', 1, '${item.stock}', '${item.landProductId}')" class="text-gray-500 focus:outline-none">
+                                        <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    </button>
+                                </div>
+                                <span class="text-gray-800 mx-2">En Stock: ${item.stock}</span>
+                            </div>
+                        </div>
+                        <span class="text-gray-600">$${item.price * item.quantity}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function updateQuantity(productName, change, stock, landProductId) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let product = cart.find(item => item.name === productName);
+
+            if (product) {
+                if (product.stock - change >= 0) {
+                    product.quantity += change;
+                    product.stock -= change;
+
+                  /* if (product.stock === 0) {
+                        document.getElementById(`price-text-${landProductId}`).classList.add("hidden");
+                        document.getElementById(`price-text-agotado-${landProductId}`).classList.remove("hidden");
+                        document.getElementById(`buy-icon-${landProductId}`).classList.add("hidden");
+                    } else {
+                        document.getElementById(`price-text-${landProductId}`).classList.remove("hidden");
+                        document.getElementById(`price-text-agotado-${landProductId}`).classList.add("hidden");
+                        document.getElementById(`buy-icon-${landProductId}`).classList.remove("hidden");
+                    }*/
+                }
+
+                if (product.quantity <= 0) {
+                    cart = cart.filter(item => item.name !== productName);
+                }
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartView();
+        }
+
+
+        // Llama a esta función cuando se cargue la página para inicializar la vista del carrito
+        document.addEventListener('DOMContentLoaded', updateCartView);
+
     </script>
 </head>
 <body>
@@ -60,19 +173,23 @@
         </div>
         <div class="product-container mx-auto mt-4 max-w-6xl">
             <!-- Repetir esta tarjeta para cada producto -->
-            <div class="product-card relative mx-1 my-3 min-w-[200px] max-w-sm cursor-pointer rounded-2xl bg-white p-2 shadow-md transition-all duration-300 hover:shadow-xl">
+            <div th:id="'product-card-' + ${product.id}" th:if="${product.stock > 0}" th:each="product : ${productsWeek}" class="product-card relative mx-1 my-3 min-w-[200px] max-w-sm cursor-pointer rounded-2xl bg-white p-2 shadow-md transition-all duration-300 hover:shadow-xl">
                 <div class="relative overflow-x-hidden rounded-2xl">
                     <img class="h-40 w-full rounded-2xl object-cover" src="https://pixahive.com/wp-content/uploads/2020/10/Gym-shoes-153180-pixahive.jpg" />
-                    <p class="group absolute right-2 top-2 cursor-pointer rounded-full bg-white p-2">
+
+                    <p th:if="${product.stock > 0}" th:id="'buy-icon-' + ${product.id}" th:attr="onclick=|addToCart('${product.name}', 1, '${product.price}', '${product.stock}', '${product.id}')|"
+                            class="group absolute right-2 top-2 cursor-pointer rounded-full bg-white p-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-70 group-hover:opacity-50" fill="none" viewBox="0 0 24 24" stroke="black">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
                     </p>
+
                 </div>
                 <div class="mb-2 mt-4 flex justify-between pl-2">
                     <div>
-                        <p class="mb-0 text-lg font-semibold text-gray-900">Product Name</p>
-                        <p class="text-md mt-0 text-gray-800">$340</p>
+                        <p class="mb-0 text-lg font-semibold text-gray-900" th:text="${product.name}"></p>
+                        <p th:id="'price-text-' + ${product.id}" class="text-md mt-0 text-gray-800" th:text="'$' + ${product.price}"></p>
+                        <p th:id="'price-text-agotado-' + ${product.id}" class="text-md mt-0 text-red-500 hidden">AGOTADO</p>
                     </div>
                     <div class="group mb-1 mr-4 flex cursor-pointer flex-col-reverse">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:opacity-70" fill="none" viewBox="0 0 24 24" stroke="gray">
@@ -82,6 +199,26 @@
                 </div>
                 <!-- Fin de la tarjeta de producto -->
             </div>
+            <!-- Producto agotado -->
+            <div th:id="'product-card-agotado-' + ${product.id}" th:if="${product.stock == 0}" th:each="product : ${productsWeek}" class="product-card relative mx-1 my-3 min-w-[200px] max-w-sm cursor-pointer rounded-2xl bg-white p-2 shadow-md transition-all duration-300 hover:shadow-xl">
+                <div class="relative overflow-x-hidden rounded-2xl">
+                    <img class="h-40 w-full rounded-2xl object-cover" src="https://pixahive.com/wp-content/uploads/2020/10/Gym-shoes-153180-pixahive.jpg" />
+                </div>
+                <div class="mb-2 mt-4 flex justify-between pl-2">
+                    <div>
+                        <p class="mb-0 text-lg font-semibold text-gray-900" th:text="${product.name}"></p>
+                        <p class="text-md mt-0 text-gray-800 text-red-500">AGOTADO</p>
+                    </div>
+                    <div class="group mb-1 mr-4 flex cursor-pointer flex-col-reverse">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:opacity-70" fill="none" viewBox="0 0 24 24" stroke="gray">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <!-- Fin de la tarjeta de producto -->
+            </div>
+
+
             <!-- Repetir más tarjetas de productos aquí -->
         </div>
     </div>
