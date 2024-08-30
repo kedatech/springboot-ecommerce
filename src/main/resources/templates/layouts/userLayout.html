@@ -18,6 +18,12 @@
                 userMenuOpen: false,
             });
         });
+
+        function cleanCart(){
+            if(localStorage.getItem("cart") == null){return}
+            localStorage.removeItem("cart");
+            location.reload();
+        }
     </script>
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col" style="background: #edf2f7;">
@@ -88,63 +94,37 @@
     </header>
 
     <!-- Panel para órdenes y carrito (lado izquierdo) -->
-    <div :class="orderOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="fixed left-0 top-0 max-w-xs w-full h-full px-6 py-4 transition duration-300 transform overflow-y-auto bg-white border-r-2 border-gray-300 z-30">
+    <div :class="orderOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="fixed left-0 top-0 z-30 h-full w-full max-w-xs transform overflow-y-auto border-r-2 border-gray-300 bg-white px-6 py-4 transition duration-300 flex flex-col">
         <div class="flex items-center justify-between">
             <h3 class="text-2xl font-medium text-gray-700">Orders & Cart</h3>
             <button @click="orderOpen = !orderOpen" class="text-gray-600 focus:outline-none">
                 <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
-        <hr class="my-3">
+        <hr class="my-3" />
 
         <!-- Tabs de navegación para cambiar entre órdenes y carrito -->
-        <div class="flex justify-center mt-4">
-            <button @click="cartOpen = false" :class="!cartOpen ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'" class="px-4 py-2 rounded-l">Orders</button>
-            <button @click="cartOpen = true" :class="cartOpen ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'" class="px-4 py-2 rounded-r">Cart</button>
+        <div class="mt-4 flex justify-center">
+            <button @click="cartOpen = false" :class="!cartOpen ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'" class="rounded-l px-4 py-2">Orders</button>
+            <button @click="cartOpen = true" :class="cartOpen ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'" class="rounded-r px-4 py-2">Cart</button>
         </div>
 
-        <!-- Contenido de órdenes -->
-        <div x-show="!cartOpen" class="mt-6">
-            <!-- Ejemplo de lista de órdenes estática -->
-            <div class="flex justify-between mt-6">
-                <div class="flex">
-                    <img class="h-20 w-20 object-cover rounded" src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1189&q=80" alt="Product Image">
-                    <div class="mx-3">
-                        <h3 class="text-sm text-gray-600">Order #12345</h3>
-                        <p class="text-gray-600">Mac Book Pro</p>
-                        <div class="flex items-center mt-2">
-                            <span class="text-gray-700 mx-2">2</span>
-                            <span class="text-gray-700">20$</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex justify-between mt-6">
-                <div class="flex">
-                    <img class="h-20 w-20 object-cover rounded" src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1189&q=80" alt="Product Image">
-                    <div class="mx-3">
-                        <h3 class="text-sm text-gray-600">Order #12346</h3>
-                        <p class="text-gray-600">Mac Book Pro</p>
-                        <div class="flex items-center mt-2">
-                            <span class="text-gray-700 mx-2">1</span>
-                            <span class="text-gray-700">20$</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Contenido del carrito -->
-        <div x-show="cartOpen" class="mt-6" id="cart-items">
+        <!-- Contenido del carrito con scroll -->
+        <div x-show="cartOpen" class="mt-6 flex-1 overflow-y-auto" id="cart-items">
             <!-- Ejemplo de lista de carrito estática -->
-            <p id="total-cart" class="text-center font-semibold text-lg text-gray-800">$0</p>
+            <p id="total-cart" class="text-center text-lg font-semibold text-gray-800">$0</p>
             <div id="cart-items-container-child">
-
+                <!-- Aquí irán los productos del carrito -->
             </div>
+        </div>
 
+        <!-- Botones de pagar y vaciar, fijados al fondo del contenedor -->
+        <div x-show="cartOpen" class="mt-4 flex justify-between">
+            <button class="scale-100 rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white transition-all duration-500 hover:scale-105 hover:bg-blue-600">Proceder pago</button>
+            <button onclick="cleanCart()" class="scale-100 rounded-lg bg-gray-500 px-4 py-2 font-semibold text-white transition-all duration-500 hover:scale-105 hover:bg-gray-600">Vaciar carrito</button>
         </div>
     </div>
+
 
     <!-- Contenido principal -->
     <main class="my-8" layout:fragment="content"></main>

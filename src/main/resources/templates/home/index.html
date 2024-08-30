@@ -44,23 +44,9 @@
                 if (existingProduct.stock - quantity >= 0) {
                     existingProduct.quantity += quantity;
                     existingProduct.stock -= quantity;
-
-                    /*if (existingProduct.stock === 0) {
-                        // Cambiar el estado a agotado
-                        document.getElementById(`price-text-${id}`).classList.add("hidden");
-                        document.getElementById(`price-text-agotado-${id}`).classList.remove("hidden");
-                        document.getElementById(`buy-icon-${id}`).classList.add("hidden");
-                    }*/
                 }
             } else {
                 cart.push({ name: productName, quantity: quantity, price: price, stock: stock - quantity, landProductId: id });
-
-                /*if (stock - quantity === 0) {
-                    // Cambiar el estado a agotado
-                    document.getElementById(`price-text-${id}`).classList.add("hidden");
-                    document.getElementById(`price-text-agotado-${id}`).classList.remove("hidden");
-                    document.getElementById(`buy-icon-${id}`).classList.add("hidden");
-                }*/
             }
 
             localStorage.setItem('cart', JSON.stringify(cart));
@@ -123,16 +109,6 @@
                 if (product.stock - change >= 0) {
                     product.quantity += change;
                     product.stock -= change;
-
-                  /* if (product.stock === 0) {
-                        document.getElementById(`price-text-${landProductId}`).classList.add("hidden");
-                        document.getElementById(`price-text-agotado-${landProductId}`).classList.remove("hidden");
-                        document.getElementById(`buy-icon-${landProductId}`).classList.add("hidden");
-                    } else {
-                        document.getElementById(`price-text-${landProductId}`).classList.remove("hidden");
-                        document.getElementById(`price-text-agotado-${landProductId}`).classList.add("hidden");
-                        document.getElementById(`buy-icon-${landProductId}`).classList.remove("hidden");
-                    }*/
                 }
 
                 if (product.quantity <= 0) {
@@ -143,9 +119,6 @@
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartView();
         }
-
-
-        // Llama a esta función cuando se cargue la página para inicializar la vista del carrito
         document.addEventListener('DOMContentLoaded', updateCartView);
 
     </script>
