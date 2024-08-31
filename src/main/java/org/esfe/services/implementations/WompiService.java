@@ -64,8 +64,7 @@ public class WompiService implements IWompiService {
                 // Usar ObjectMapper para deserializar el JSON y extraer el access_token
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(response.body());
-                String accessToken = jsonNode.get("access_token").asText();
-                return accessToken;
+                return jsonNode.get("access_token").asText();
             } else {
                 throw new RuntimeException("Failed to authenticate with Wompi: " + response.body());
             }
