@@ -1,15 +1,11 @@
 package org.esfe.models.dtos.wompi;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Setter
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class LinkPago {
-    private Integer idEnlace;
+@Data
+public class PaymentLinkResponse {
+    private int idEnlace;
+    private String urlQrCodeEnlace;
     private String urlEnlace;
+    private boolean estaProductivo;
 }
