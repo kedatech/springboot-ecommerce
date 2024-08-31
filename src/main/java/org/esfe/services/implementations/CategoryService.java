@@ -13,8 +13,19 @@ import java.util.Optional;
 
 @Service
 public class CategoryService implements ICategoryService {
+
     @Autowired
     private ICategoryRepository categoryRepository;
+
+    @Override
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll(); // Obtiene todas las categorías
+    }
+
+    @Override
+    public Optional<Category> getCategoryById(Integer id) {
+        return categoryRepository.findById(id); // Obtiene una categoría por ID
+    }
 
     @Override
     public Page<Category> buscarTodosPaginados(Pageable pageable) {
