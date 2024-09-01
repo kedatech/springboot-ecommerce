@@ -1,4 +1,4 @@
-package org.esfe.security;
+package org.esfe.config;
 
 import org.esfe.services.implementations.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
