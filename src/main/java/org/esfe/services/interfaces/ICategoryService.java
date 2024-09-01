@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface ICategoryService {
 
+    List<Category> getAllCategories();
+
     Page<Category> buscarTodosPaginados(Pageable pageable);
 
     List<Category> obtenerTodos();
@@ -21,4 +23,6 @@ public interface ICategoryService {
     Category createOEditar(Category category);
 
     void eliminarPorId(Integer id);
+
+    Optional<Category> getCategoryById(Integer id);
 }

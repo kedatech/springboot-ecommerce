@@ -1,35 +1,51 @@
+<!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/adminLayout}">
+      layout:decorate="~{layouts/adminLayout}"
+      class="bg-gray-100">
 
-<div layout:fragment="admin-content">
-    <h1>Eliminar Producto</h1>
-    <h3>¿Estás seguro de que deseas eliminar este producto?</h3>
-    <div>
-        <hr/>
-        <dl class="row">
-            <dt class="col-sm-2">ID</dt>
-            <dd class="col-sm-10" th:text="${product.id}"></dd>
-
-            <dt class="col-sm-2">Nombre</dt>
-            <dd class="col-sm-10" th:text="${product.name}"></dd>
-
-            <dt class="col-sm-2">Descripción</dt>
-            <dd class="col-sm-10" th:text="${product.description}"></dd>
-
-            <dt class="col-sm-2">Precio</dt>
-            <dd class="col-sm-10" th:text="${product.price}"></dd>
-
-            <dt class="col-sm-2">Stock</dt>
-            <dd class="col-sm-10" th:text="${product.stock}"></dd>
-        </dl>
+<div layout:fragment="admin-content" class="p-4 sm:ml-64">
+    <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+        <h1 class="text-2xl font-semibold mb-6 text-gray-800">Eliminar Producto</h1>
+        <h3 class="text-lg text-gray-700 mb-4">¿Estás seguro de que deseas eliminar este producto?</h3>
+        <div>
+            <hr class="mb-4"/>
+            <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <dt class="font-medium text-gray-700">ID</dt>
+                    <dd class="text-gray-900" th:text="${product.id}"></dd>
+                </div>
+                <div>
+                    <dt class="font-medium text-gray-700">Nombre</dt>
+                    <dd class="text-gray-900" th:text="${product.name}"></dd>
+                </div>
+                <div>
+                    <dt class="font-medium text-gray-700">Descripción</dt>
+                    <dd class="text-gray-900" th:text="${product.description}"></dd>
+                </div>
+                <div>
+                    <dt class="font-medium text-gray-700">Precio</dt>
+                    <dd class="text-gray-900" th:text="${product.price}"></dd>
+                </div>
+                <div>
+                    <dt class="font-medium text-gray-700">Stock</dt>
+                    <dd class="text-gray-900" th:text="${product.stock}"></dd>
+                </div>
+            </dl>
+        </div>
+        <div class="flex justify-start space-x-4 mt-6">
+            <form th:action="@{/products/delete}" method="post">
+                <input type="hidden" name="id" th:value="${product.id}">
+                <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                    Eliminar
+                </button>
+            </form>
+            <a th:href="@{/products}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                Regresar
+            </a>
+        </div>
     </div>
-
-    <form th:action="@{/products/delete}" method="post">
-        <input type="hidden" name="id" th:value="${product.id}">
-        <input type="submit" value="Eliminar" class="btn btn-danger">
-        <a th:href="@{/products}" class="btn btn-secondary">Regresar</a>
-    </form>
 </div>
 </html>
+
