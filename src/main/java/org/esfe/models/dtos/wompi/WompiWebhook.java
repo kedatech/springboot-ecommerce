@@ -82,11 +82,5 @@ public class WompiWebhook {
 
         @JsonProperty("Email")
         private String email;
-
-        @JsonProperty("additionalProp1")
-        private String additionalProp1;
-
-        @JsonProperty("additionalProp2")
-        private String additionalProp2;
     }
 }
