@@ -13,7 +13,7 @@ public class WompiWebhook {
     private String fechaTransaccion;
 
     @JsonProperty("Monto")
-    private int monto;
+    private double monto;
 
     @JsonProperty("ModuloUtilizado")
     private String moduloUtilizado;
