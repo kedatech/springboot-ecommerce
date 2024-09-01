@@ -33,7 +33,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/security/**", "/login/**", "/logout", "/oauth2/**", "/", "/css/**", "/js/**", "/images/**", "/upload/**").permitAll()
+                        .requestMatchers("/security/**", "/login/**", "/logout", "/oauth2/**", "/", "/css/**", "/js/**", "/images/**", "/upload/**", "/api/orders/**", "/orders/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                 )
                 .csrf(c -> c
-                        .ignoringRequestMatchers("/upload/**") // Desactivar CSRF para las rutas de subida
+                        .ignoringRequestMatchers("/upload/**", "/api/**", "/orders/**") // Desactivar CSRF para las rutas de subida
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
         return http.build();
