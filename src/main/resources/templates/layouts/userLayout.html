@@ -57,9 +57,10 @@
 
     </script>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col" style="background: #edf2f7;">
+<body class="h-screen w-screen overflow-hidden flex flex-col pt-[90px]">
 <div x-data="$store.sidebar" class="bg-white flex-grow overflow-y-auto">
-    <header>
+
+    <header class="fixed top-0 w-full bg-[#f8f9fa] shadow-sm z-50">
         <div class="container mx-auto px-6 py-3">
             <div class="flex items-center justify-between">
                 <!-- Botón para abrir órdenes y carrito a la izquierda -->
@@ -129,7 +130,7 @@
     </header>
 
     <!-- Panel para órdenes y carrito (lado izquierdo) -->
-    <div :class="orderOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="fixed left-0 top-0 z-30 h-full w-full max-w-xs transform overflow-y-auto border-r-2 border-gray-300 bg-white px-6 py-4 transition duration-300 flex flex-col">
+    <div :class="orderOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="fixed left-0 top-0 z-50 h-full w-full max-w-xs transform overflow-y-auto border-r-2 border-gray-300 bg-white px-6 py-4 transition duration-300 flex flex-col">
         <div class="flex items-center justify-between">
             <h3 class="text-2xl font-medium text-gray-700">Orders & Cart</h3>
             <button @click="orderOpen = !orderOpen" class="text-gray-600 focus:outline-none">

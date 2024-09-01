@@ -1,12 +1,6 @@
 package org.esfe.controllers;
 
-import net.minidev.json.parser.JSONParser;
-import org.esfe.models.Order;
-import org.esfe.models.OrderItem;
-import org.esfe.models.Product;
 import org.esfe.models.User;
-import org.esfe.models.enums.OrderStatus;
-import org.esfe.services.implementations.ProductService;
 import org.esfe.services.interfaces.IOrderItemService;
 import org.esfe.services.interfaces.IOrderService;
 import org.esfe.services.interfaces.IProductService;
@@ -14,7 +8,6 @@ import org.esfe.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;

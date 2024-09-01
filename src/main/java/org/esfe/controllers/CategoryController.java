@@ -1,7 +1,6 @@
 package org.esfe.controllers;
 
 import org.esfe.models.Category;
-import org.esfe.models.User;
 import org.esfe.services.interfaces.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

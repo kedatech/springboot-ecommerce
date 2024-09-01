@@ -30,7 +30,7 @@ public class WompiService implements IWompiService {
     @Value("${wompi.emails.notificacion}")
     private String emailsNotificacion;
 
-    @Value("${config.host}")
+    @Value("${app.host}")
     private String host;
 
     public PaymentLinkResponse generateLink(String identificadorEnlaceComercio, Double monto, Integer paymentId) {
