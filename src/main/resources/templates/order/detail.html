@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/userLayout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Órdenes</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body>
+<div layout:fragment="content" class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Tus Órdenes</h1>
+
+    <div class="space-y-4">
+        <!-- Ejemplo de una orden individual -->
+        <div th:each="order : ${orders}" x-data="{ open: false }" class="bg-white shadow-lg rounded-lg p-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 th:text="'Orden #' + ${order.id}" class="text-lg font-semibold text-gray-700"></h3>
+                    <p th:text="'Fecha: ' + ${#dates.format(order.createdAt, 'dd/MM/yyyy HH:mm')}" class="text-sm text-gray-600 mt-1"></p>
+                    <p th:text="'Estado: ' + ${order.status}" class="text-sm text-gray-600 mt-1"><span th:text="${order.status}" class="text-green-500">Completada</span></p>
+                </div>
+                <div class="text-right">
+                    <p th:text="'Total: $' + ${order.totalAmount}" class="text-xl font-semibold text-sm text-gray-600"></p>
+                    <button @click="open = !open" class="mt-2 text-sm text-blue-500 hover:underline">Ver productos</button>
+                </div>
+            </div>
+            <!-- Listado de productos (Dropdown) con scroll -->
+            <div x-show="open" class="mt-4 max-h-48 overflow-y-auto">
+                <ul th:each="item : ${order.orderItems}" class="divide-y divide-gray-200">
+                    <li class="py-4 flex items-center">
+                        <img src="https://via.placeholder.com/50" alt="Producto" class="h-12 w-12 object-cover rounded mr-4">
+                        <div>
+                            <p th:text="${item.product.name}" class="text-gray-700"></p>
+                            <p th:text="'Cantidad: ' + ${item.quantity}" class="text-gray-500 text-sm"></p>
+                        </div>
+                        <span th:text="'$' + ${item.price}" class="ml-auto font-medium text-gray-900"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Aquí irían más órdenes con la misma estructura -->
+    </div>
+</div>
+</body>
+</html>
