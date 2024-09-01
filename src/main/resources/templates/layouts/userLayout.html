@@ -19,11 +19,42 @@
             });
         });
 
-        function cleanCart(){
+        function cleanCart(reload = true){
             if(localStorage.getItem("cart") == null){return}
             localStorage.removeItem("cart");
-            location.reload();
+            if(reload){
+                location.reload();
+            }
         }
+
+        function sendCart() {
+            // Obtén los datos del carrito desde localStorage
+            let cart = JSON.parse(localStorage.getItem("cart"));
+
+            // Si el carrito está vacío, no hagas nada
+            if (!cart || cart.length === 0) {
+                return;
+            }
+
+            // Prepara el objeto de la orden para enviarlo al backend
+            let logedId = localStorage.getItem("userId");
+
+            const orderData = {
+                user: { id: logedId },
+                orderItems: cart.map(item => ({
+                    id: item.landProductId,
+                    name: item.name,
+                    quantity: item.quantity,
+                    price: item.price,
+                    stock: item.stock
+                }))
+            };
+
+            localStorage.setItem("orderData", JSON.stringify(orderData));
+            cleanCart(false);
+            window.location.href = '/orders/to-confirm';
+        }
+
     </script>
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col" style="background: #edf2f7;">
@@ -47,11 +78,15 @@
                 <!-- Login/Usuario y carrito en mobile -->
                 <div class="flex items-center justify-end w-full md:w-auto">
                     <!-- Icono de carrito (siempre visible en móvil) -->
-                    <button @click="orderOpen = !orderOpen; if(orderOpen) cartOpen = false" class="text-gray-600 focus:outline-none mx-4 sm:mx-0 md:hidden">
+                    <button
+                            x-show="window.location.pathname === '/'"
+                            @click="orderOpen = !orderOpen; if(orderOpen) cartOpen = false"
+                            class="text-gray-600 focus:outline-none mx-4 sm:mx-0 md:hidden">
                         <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                             <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
                     </button>
+
 
                     <div class="relative">
                         <!-- Si el usuario no está logueado -->
@@ -109,6 +144,13 @@
             <button @click="cartOpen = true" :class="cartOpen ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'" class="rounded-r px-4 py-2">Cart</button>
         </div>
 
+        <div x-show="!cartOpen" class="mt-8 flex-1 overflow-y-auto">
+            <div id="orders-container" class="space-y-6">
+
+            </div>
+        </div>
+
+
         <!-- Contenido del carrito con scroll -->
         <div x-show="cartOpen" class="mt-6 flex-1 overflow-y-auto" id="cart-items">
             <!-- Ejemplo de lista de carrito estática -->
@@ -120,7 +162,7 @@
 
         <!-- Botones de pagar y vaciar, fijados al fondo del contenedor -->
         <div x-show="cartOpen" class="mt-4 flex justify-between">
-            <button class="scale-100 rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white transition-all duration-500 hover:scale-105 hover:bg-blue-600">Proceder pago</button>
+            <button onclick="sendCart()" class="scale-100 rounded-lg bg-blue-500 px-4 py-2 font-semibold text-white transition-all duration-500 hover:scale-105 hover:bg-blue-600">Proceder pago</button>
             <button onclick="cleanCart()" class="scale-100 rounded-lg bg-gray-500 px-4 py-2 font-semibold text-white transition-all duration-500 hover:scale-105 hover:bg-gray-600">Vaciar carrito</button>
         </div>
     </div>

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/userLayout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Orden de Compra</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+           loadData();
+       });
+
+       function loadData(){
+           let orderData = JSON.parse(localStorage.getItem("orderData"));
+           let totalPrice = 0;
+           let totalProducts = 0;
+           let orderItemsContainer = document.getElementById('order-items');
+           let totalPriceSpan = document.getElementById('total-price');
+           let totalProdutsSpan = document.getElementById('total-products');
+            orderItemsContainer.innerHTML = ""
+           orderData.orderItems.forEach(item =>{
+                totalPrice += (item.price * item.quantity)
+                totalProducts += item.quantity
+               orderItemsContainer.innerHTML += `<!-- Repetir para cada producto -->
+                   <div class="flex justify-between items-start border-b border-gray-200 pb-4">
+                       <div class="flex items-center">
+                           <img class="h-20 w-20 object-cover rounded" src="https://via.placeholder.com/150" alt="Product Image">
+                           <div class="ml-4">
+                               <h3 class="text-lg font-medium text-gray-800">${item.name}</h3>
+                               <div class="flex items-center mt-2">
+                                   <button onclick="updateQuantity(${item.id}, -1)" class="text-gray-500 focus:outline-none">
+                                       <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                                           <path d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                       </svg>
+                                   </button>
+                                   <span class="text-gray-700 mx-2">${item.quantity}</span>
+                                   <button onclick="updateQuantity(${item.id}, 1)" class="text-gray-500 focus:outline-none">
+                                       <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                                           <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                       </svg>
+                                   </button>
+                               </div>
+                               <span class="text-gray-600 mt-2">En Stock: ${item.stock}</span>
+                           </div>
+                       </div>
+                       <span class="text-gray-800 text-lg font-medium">Total $${item.price * item.quantity}</span>
+                   </div>
+                   <!-- Fin del repetido -->`
+           })
+
+           totalPriceSpan.innerText = `$${totalPrice}`
+           totalProdutsSpan.innerText = `${totalProducts}`
+
+       }
+      function updateQuantity(productId, change) {
+        let orderData = JSON.parse(localStorage.getItem("orderData"));
+        let orderItems = orderData.orderItems;
+
+        let productIndex = orderItems.findIndex(item => item.id == productId);
+        if (productIndex !== -1) {
+            let product = orderItems[productIndex];
+            if(product.quantity == 1 && change == -1 && orderItems.length == 1){return}
+
+            if (product.stock - change >= 0) {
+                product.quantity += change;
+                product.stock -= change;
+            }
+
+            // Si la cantidad es 0 o menos, elimina el producto de orderItems
+            if (product.quantity <= 0) {
+                orderItems.splice(productIndex, 1);
+            } else {
+                orderItems[productIndex] = product;
+            }
+            orderData.orderItems = orderItems;
+            localStorage.setItem('orderData', JSON.stringify(orderData));
+            loadData();
+        }
+    }
+
+
+       //AQUI AL MOMENTO DE CONFIRMASE, SE DEBERIA DE REDIRIGIR A WOMPI Y DESPUES A /api/orders/new PARA LA CREACION DE LA ORDEN
+       function confirmOrder() {
+           let orderData = localStorage.getItem("orderData");
+           fetch('/api/orders/new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: orderData
+            })
+            .then(response => response.json())
+            .then(data => {
+                localStorage.removeItem("orderData");
+                window.location.href = data.redirectUrl;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+       }
+
+       function cancelOrder() {
+           localStorage.removeItem("orderData");
+           window.location.href = '/';
+       }
+    </script>
+</head>
+<body>
+
+<div layout:fragment="content" class="max-w-4xl mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Confirmación de Orden</h1>
+
+    <!-- Listado de productos -->
+    <div id="order-items" class="space-y-6 max-h-96 overflow-y-auto">
+
+
+    </div>
+
+    <!-- Resumen de la orden -->
+    <div class="mt-6 border-t border-gray-200 pt-4">
+        <div class="mb-2 flex justify-between">
+            <span class="text-gray-600">Productos totales:</span>
+            <span id="total-products" class="text-xl font-medium text-gray-800"></span>
+        </div>
+        <div class="mb-4 flex justify-between">
+            <span class="text-gray-600">Total a pagar:</span>
+            <span id="total-price" class="text-2xl font-bold text-gray-800"></span>
+        </div>
+    </div>
+
+
+    <!-- Opciones -->
+    <div class="mt-6 flex justify-end space-x-4">
+        <button onclick="confirmOrder()" class="px-4 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600 focus:outline-none">Confirmar Orden</button>
+        <button onclick="cancelOrder()" class="px-4 py-2 bg-red-500 text-white font-medium rounded hover:bg-red-600 focus:outline-none">Cancelar Orden</button>
+    </div>
+</div>
+
+
+</body>
+</html>

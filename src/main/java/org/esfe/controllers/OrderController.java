@@ -7,13 +7,14 @@ import org.esfe.services.implementations.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@Controller
 @RequestMapping("/orders")
 public class OrderController {
 
@@ -37,11 +38,23 @@ public class OrderController {
     }
 
     // GET (por usuario): Obtener órdenes del usuario y dirigir a una vista
-    @GetMapping("/user/{userId}")
-    public String getOrdersByUser(@PathVariable Integer userId, Model model) {
+    @GetMapping("/user/{userId}/detail")
+    public String getOrdersDetailByUser(@PathVariable Integer userId, Model model) {
         List<Order> orders = orderService.getOrdersByUser(userId);
         model.addAttribute("orders", orders);
-        return "orders/userOrders";  // Cambia "userOrdersView" por el nombre de tu vista
+        return "order/detail";  // Cambia "userOrdersView" por el nombre de tu vista
+    }
+
+    @GetMapping("/to-confirm")
+    public String toconfirm() {
+        return "order/confirm";
+    }
+
+    @GetMapping("/user/{userId}")
+    @ResponseBody
+    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Integer userId) {
+        List<Order> orders = orderService.getOrdersByUser(userId);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     // GET (detalles): Obtener detalles de una orden de un ítem

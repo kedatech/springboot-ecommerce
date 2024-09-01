@@ -1,6 +1,10 @@
 package org.esfe.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonSerializer;
 import org.esfe.models.Product;
+import org.esfe.models.User;
 import org.esfe.services.interfaces.IProductService;
 import org.esfe.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping ("/")
@@ -19,16 +24,20 @@ public class HomeController {
 
     @Autowired
     private IProductService productService;
+    @Autowired
+    private IUserService userService;
 
     @GetMapping
-    public String index(OAuth2AuthenticationToken authentication, Model model) {
+    public String index(OAuth2AuthenticationToken authentication, Model model) throws JsonProcessingException {
         if (authentication != null && authentication.isAuthenticated()) {
             String username = (String) authentication.getPrincipal().getAttributes().get("name");
-            // imprimir el nombre del usuario en la consola
-            System.out.println("Usuario autenticado: " + username);
             model.addAttribute("username", username);
+            String sub = (String) authentication.getPrincipal().getAttributes().get("sub");
+            Optional<User> user = userService.buscarPorGoogleId(sub);
+            user.ifPresent(value -> model.addAttribute("userId", value.getId()));
         } else {
             model.addAttribute("username", "");
+            model.addAttribute("userId", 0);
         }
         List<Product> productsWeek = productService.obtenerTodos();
         model.addAttribute("productsWeek", productsWeek);

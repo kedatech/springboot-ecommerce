@@ -2,18 +2,23 @@ package org.esfe.services.implementations;
 
 import org.esfe.models.Order;
 import org.esfe.models.OrderItem;
+import org.esfe.models.Product;
 import org.esfe.models.User;
 import org.esfe.models.enums.OrderStatus;
 import org.esfe.repository.IOrderItemRepository;
 import org.esfe.repository.IOrderRepository;
 import org.esfe.repository.IUserRepository;
+import org.esfe.services.interfaces.IOrderItemService;
 import org.esfe.services.interfaces.IOrderService;
+import org.esfe.services.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -23,7 +28,15 @@ public class OrderService implements IOrderService {
     @Autowired
     private IOrderRepository orderRepository;
 
+    @Autowired
     private IOrderItemRepository orderItemRepository;
+
+    @Autowired
+    private IProductService productService;
+
+    @Autowired
+    private IOrderItemService orderItemService;
+
 
     @Override
     public boolean deleteItemFromOrder(Integer orderId, Integer itemId) {
@@ -56,7 +69,6 @@ public class OrderService implements IOrderService {
         return false;
     }
 
-
     public Order createOrder(User user, List<OrderItem> orderItems) {
         Order order = new Order();
         order.setUser(user);
@@ -71,6 +83,48 @@ public class OrderService implements IOrderService {
         order.setTotalAmount(totalAmount);
 
         return orderRepository.save(order);
+    }
+
+
+    public Order createOrderMap(User user, List<Map<String, Object>> orderItems) {
+        List<OrderItem> orderItemList = new ArrayList<>();
+        double totalAmount = 0;
+        Order order = new Order();
+        order.setUser(user);
+        order.setStatus(OrderStatus.PENDING);
+        order.setTotalAmount(0);
+        Order orderSaved = orderRepository.save(order);
+
+        for (Map<String, Object> itemData : orderItems){
+            String productIdStr = (String) itemData.get("id");
+            Integer productId = Integer.parseInt(productIdStr);
+            Integer quantity = (Integer) itemData.get("quantity");
+            Optional<Product> productOpt = productService.buscarPorId(productId);
+
+            if (productOpt.isPresent()) {
+                Product product = productOpt.get();
+                double price = product.getPrice();
+                OrderItem orderItem = new OrderItem();
+                orderItem.setOrder(orderSaved);
+                orderItem.setProduct(product);
+                orderItem.setQuantity(quantity);
+                orderItem.setPrice(price);
+                orderItem.setActive(true);
+
+                orderItemList.add(orderItem);
+                orderItemService.createOEditar(orderItem);
+
+                totalAmount += price * quantity;
+                product.setStock(Math.max(product.getStock() - quantity, 0));
+                productService.createOEditar(product);
+            }
+        }
+
+        orderSaved.setTotalAmount(totalAmount);
+        orderSaved.setOrderItems (orderItemList);
+
+
+        return orderRepository.save(orderSaved);
     }
 
 
