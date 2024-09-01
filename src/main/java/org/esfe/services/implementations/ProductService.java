@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -19,6 +20,9 @@ public class ProductService implements IProductService {
 
     @Autowired
     private IProductRepository productRepository;
+
+    @Autowired
+    private FirebaseStorageService firebaseStorageService;
 
     @Override
     public Page<Product> buscarTodosPaginados(Pageable pageable) {
@@ -44,5 +48,14 @@ public class ProductService implements IProductService {
     @Override
     public void eliminarPorId(Integer id) {
         productRepository.deleteById(id);
+    }
+
+    // Sobrecarga del método createOEditar para manejar la imagen
+    public Product createOEditar(Product product, MultipartFile imageFile) {
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = firebaseStorageService.upload(imageFile);
+            product.setImageUrl(imageUrl);
+        }
+        return productRepository.save(product);
     }
 }

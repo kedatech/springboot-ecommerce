@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IProductService {
-
     Page<Product> buscarTodosPaginados(Pageable pageable);
 
     List<Product> obtenerTodos();
@@ -20,3 +19,7 @@ public interface IProductService {
 
     void eliminarPorId(Integer id);
 }
+
+
+
+

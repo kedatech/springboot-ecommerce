@@ -18,6 +18,9 @@ import java.util.List;
 @Entity
 @Table(name = "products")
 public class Product {
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
