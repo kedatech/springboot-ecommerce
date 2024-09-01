@@ -31,9 +31,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        String[] permittedPaths = {
+                "/security/**", "/login/**", "/logout", "/oauth2/**", "/",
+                "/css/**", "/js/**", "/images/**", "/upload/**", "/api/orders/**", "/orders/**",
+                "/api/wompi/webhook"
+        };
+
+        String[] ignoredCsrfPaths = {
+                "/upload/**", "/api/**", "/orders/**", "/api/wompi/webhook"
+        };
+
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/security/**", "/login/**", "/logout", "/oauth2/**", "/", "/css/**", "/js/**", "/images/**", "/upload/**", "/api/orders/**", "/orders/**").permitAll()
+                        .requestMatchers(permittedPaths).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -49,8 +60,8 @@ public class SecurityConfig {
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")
                 )
-                .csrf(c -> c
-                        .ignoringRequestMatchers("/upload/**", "/api/**", "/orders/**") // Desactivar CSRF para las rutas de subida
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(ignoredCsrfPaths)
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
         return http.build();
@@ -63,9 +74,8 @@ public class SecurityConfig {
             public OAuth2User loadUser(OAuth2UserRequest userRequest) {
                 OAuth2User oAuth2User = super.loadUser(userRequest);
                 userService.processOAuthPostLogin(oAuth2User);
-                Collections.singleton(new OAuth2UserAuthority(oAuth2User.getAttributes()));
-                Map<String, Object> attributes = oAuth2User.getAttributes();
 
+                Map<String, Object> attributes = oAuth2User.getAttributes();
                 return new DefaultOAuth2User(oAuth2User.getAuthorities(), attributes, "email");
             }
         };
