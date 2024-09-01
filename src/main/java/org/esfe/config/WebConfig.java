@@ -7,10 +7,10 @@
 //@Configuration
 //public class WebConfig implements WebMvcConfigurer {
 //
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/**")
-//                .addResourceLocations("classpath:/static/")
-//                .setCachePeriod(3600); // Puedes configurar el período de caché si es necesario
-//    }
+//   @Override
+//   public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//       registry.addResourceHandler("/**")
+//               .addResourceLocations("classpath:/static/");
+//            //    .setCachePeriod(3600); // Puedes configurar el período de caché si es necesario
+//   }
 //}
