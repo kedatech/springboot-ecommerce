@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botón de Pago</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+
+    <!-- Botón de Pago Wompi -->
+    <div class="wompi_button_widget bg-black"
+         data-url-pago="https://pagos.wompi.sv/IntentoPago/Redirect?id=3c22e966-bee4-4150-bff6-a99721664c7c&esWidget=1" 
+         data-render="widget">
+    </div>
+
+    <script src="https://pagos.wompi.sv/js/wompi.pagos.js"></script>
+
+    <!-- Estilos adicionales para personalizar el widget -->
+    <style>
+        .wompi_button_widget iframe {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</body>
+</html>
