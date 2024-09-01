@@ -14,6 +14,8 @@ public interface ICategoryService {
 
     List<Category> obtenerTodos();
 
+    void save(Category category);
+
     Optional<Category> buscarPorId(Integer id);
 
     Category createOEditar(Category category);

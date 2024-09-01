@@ -1,6 +1,7 @@
 package org.esfe.controllers;
 
 import org.esfe.models.Category;
+import org.esfe.models.User;
 import org.esfe.services.interfaces.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/categories")
@@ -17,9 +19,10 @@ public class CategoryController {
     @Autowired
     private ICategoryService categoryService;
 
+    @GetMapping
     public String index(Model model){
-        List<Category> category = categoryService.obtenerTodos();
-        model.addAttribute("category", category);
+        List<Category> categories = categoryService.obtenerTodos();
+        model.addAttribute("categories", categories);
         return "category/index";
     }
 
@@ -48,10 +51,20 @@ public class CategoryController {
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Integer id, Model model){
-        Category category = categoryService.buscarPorId(id).orElse(null);
-        model.addAttribute("category", category);
-        return "category/edit";
+    public String editCategoryForm(@PathVariable Integer id, Model model) {
+        Optional<Category> category = categoryService.buscarPorId(id);
+        if (category.isPresent()) {
+            model.addAttribute("category", category.get());
+            return "category/edit";
+        } else {
+            return "redirect:/categories";
+        }
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateCategory(@PathVariable Integer id, @ModelAttribute("category") Category category) {
+        categoryService.save(category);
+        return "redirect:/categories"; // Redirigir a la lista de categorías después de guardar
     }
 
     @GetMapping("/remove/{id}")

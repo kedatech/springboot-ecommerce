@@ -27,6 +27,11 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    public void save(Category category) {
+        categoryRepository.save(category);
+    }
+
+    @Override
     public Optional<Category> buscarPorId(Integer id) {
         return categoryRepository.findById(id);
     }
