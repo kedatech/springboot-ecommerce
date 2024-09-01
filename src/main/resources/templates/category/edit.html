@@ -1,0 +1,36 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/adminLayout}">
+
+<div layout:fragment="admin-content">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Editar Categoría</h1>
+
+    <form th:action="@{'/categories/edit/' + ${category.id}}" th:object="${category}" method="post" class="space-y-6">
+        <!-- Campo oculto para el ID -->
+        <input type="hidden" th:field="*{id}">
+
+        <!-- Campo para Nombre de Categoría -->
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+            <input type="text" class="w-full border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                   th:field="*{name}" id="name" placeholder="Escriba el nombre de la categoría" required>
+        </div>
+
+        <!-- Campo para Descripción de Categoría -->
+        <div>
+            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+            <textarea class="w-full border border-gray-300 rounded-lg p-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      th:field="*{description}" id="description" placeholder="Escriba la descripción de la categoría" rows="4" required></textarea>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="flex items-center space-x-4">
+            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Guardar Cambios
+            </button>
+            <a th:href="@{/categories}" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg shadow-md hover:bg-gray-400 transition duration-200">Regresar</a>
+        </div>
+    </form>
+</div>
+</html>
