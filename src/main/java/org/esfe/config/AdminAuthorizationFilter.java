@@ -1,4 +1,4 @@
-package org.esfe.security;
+package org.esfe.config;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

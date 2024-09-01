@@ -10,6 +10,13 @@
 
        function loadData(){
            let orderData = JSON.parse(localStorage.getItem("orderData"));
+           
+               // Verificar si orderData existe y si hay productos
+            if (!orderData || !orderData.orderItems || orderData.orderItems.length === 0) {
+                window.location.href = '/';
+                return;
+            }
+
            let totalPrice = 0;
            let totalProducts = 0;
            let orderItemsContainer = document.getElementById('order-items');

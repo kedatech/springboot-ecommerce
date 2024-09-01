@@ -2,19 +2,21 @@ package org.esfe.services.implementations;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import org.esfe.models.dtos.wompi.PaymentLinkRequest;
+import org.esfe.models.dtos.wompi.PaymentLinkRequest.Configuracion;
+import org.esfe.models.dtos.wompi.PaymentLinkRequest.FormaPago;
 import org.esfe.models.dtos.wompi.PaymentLinkResponse;
 import org.esfe.services.interfaces.IWompiService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.StringJoiner;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Service
 public class WompiService implements IWompiService {
@@ -25,19 +27,74 @@ public class WompiService implements IWompiService {
     @Value("${wompi.client.secret}")
     private String clientSecret;
 
-    public WompiService() {
-    }
+    @Value("${wompi.emails.notificacion}")
+    private String emailsNotificacion;
 
-    public PaymentLinkResponse generateLink(Integer idEnlace, String urlEnlace) {
-        // Implementación pendiente
-        return null;
+    @Value("${app.host}")
+    private String host;
+
+    public PaymentLinkResponse generateLink(String identificadorEnlaceComercio, Double monto, Integer paymentId) {
+        try {
+            // Obtener token de autenticación
+            String authToken = getAuth();
+
+            // Crear un objeto PaymentLinkRequest y configurarlo
+            PaymentLinkRequest request = new PaymentLinkRequest();
+            request.setIdAplicativo(clientId);
+            request.setIdentificadorEnlaceComercio(identificadorEnlaceComercio);
+            request.setMonto(monto);
+            request.setNombreProducto("Tu carrito de compras");
+
+            // Configurar forma de pago
+            FormaPago formaPago = new FormaPago();
+            formaPago.setPermitirTarjetaCreditoDebido(true);
+            formaPago.setPermitirPagoConPuntoAgricola(false);
+            formaPago.setPermitirPagoEnCuotasAgricola(false);
+            formaPago.setPermitirPagoEnBitcoin(false);
+            request.setFormaPago(formaPago);
+
+            // Configurar la configuración adicional
+            Configuracion configuracion = new Configuracion();
+            configuracion.setEsMontoEditable(false);
+            configuracion.setEsCantidadEditable(false);
+            configuracion.setCantidadPorDefecto(1);
+            configuracion.setDuracionInterfazIntentoMinutos(10);
+            configuracion.setUrlRetorno(host + "/payment/success");
+            configuracion.setEmailsNotificacion(emailsNotificacion);
+            configuracion.setUrlWebhook(host + "/api/wompi/webhook");
+            configuracion.setNotificarTransaccionCliente(true);
+            request.setConfiguracion(configuracion);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonBody = objectMapper.writeValueAsString(request);
+
+            // Crear y enviar la solicitud POST
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.wompi.sv/generate-link")) // Reemplazar con la URL real de la API
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + authToken)
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8))
+                .build();
+
+            HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                // Deserializar la respuesta en un PaymentLinkResponse
+                return objectMapper.readValue(response.body(), PaymentLinkResponse.class);
+            } else {
+                throw new RuntimeException("Failed to generate link with Wompi: " + response.body());
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error during link generation", e);
+        }
     }
 
     private String getAuth() {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
-            // Datos del cuerpo de la solicitud
             Map<String, String> parameters = Map.of(
                 "grant_type", "client_credentials",
                 "audience", "wompi_api",
@@ -45,7 +102,6 @@ public class WompiService implements IWompiService {
                 "client_secret", clientSecret
             );
 
-            // Codificación del cuerpo en formato x-www-form-urlencoded
             StringJoiner formParams = new StringJoiner("&");
             for (Map.Entry<String, String> entry : parameters.entrySet()) {
                 formParams.add(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "=" + 
@@ -53,7 +109,7 @@ public class WompiService implements IWompiService {
             }
 
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://id.wompi.sv/connect/token")) // URL del endpoint
+                .uri(URI.create("https://id.wompi.sv/connect/token"))
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .POST(HttpRequest.BodyPublishers.ofString(formParams.toString()))
                 .build();
@@ -61,7 +117,6 @@ public class WompiService implements IWompiService {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                // Usar ObjectMapper para deserializar el JSON y extraer el access_token
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(response.body());
                 return jsonNode.get("access_token").asText();
