@@ -88,7 +88,7 @@
                 <!-- Información del producto -->
                 <div class="mx-auto mt-5 w-full max-w-lg md:ml-8 md:mt-0 md:w-1/2">
                     <h3 th:text="${product.name}" class="text-2xl uppercase text-gray-800 font-bold">Nike Air</h3>
-                    <span th:text="${product.price}" class="mt-2 block text-xl text-gray-600">$125</span>
+                    <span th:text="'$'+${product.price}" class="mt-2 block text-xl text-gray-600">$125</span>
                     <hr class="my-4" />
                     <h4 class="text-lg text-gray-700 font-semibold">Descripción</h4>
                     <p th:text="${product.description}" class="mt-2 text-gray-500">Zapatos clásicos de Nike, perfectos para cualquier ocasión.</p>
