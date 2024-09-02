@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de la Orden</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto my-10 p-6 bg-white shadow-md rounded-lg">
+        <h1 class="text-3xl font-bold mb-6">Detalle de la Orden</h1>
+
+        <!-- Información de la Orden -->
+        <div class="mb-6">
+            <h2 class="text-2xl font-semibold mb-4">Información de la Orden</h2>
+            <p><strong>ID de la Orden:</strong> <span th:text="${order.id}"></span></p>
+            <!-- <p><strong>Usuario:</strong> <span th:text="${order.user.username}"></span></p> -->
+            <p><strong>Estado:</strong> <span th:text="${order.status}"></span></p>
+            <p><strong>Monto Total:</strong> $<span th:text="${order.totalAmount}"></span></p>
+            <p><strong>Fecha de Creación:</strong> <span th:text="${#dates.format(order.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></span></p>
+        </div>
+
+        <!-- Items de la Orden -->
+        <div class="mb-6">
+            <h2 class="text-2xl font-semibold mb-4">Items de la Orden</h2>
+            <ul>
+                <li th:each="item : ${order.orderItems}" class="mb-3">
+                    <div class="flex justify-between">
+                        <p><strong>Producto:</strong> <span th:text="${item.product.name}"></span></p>
+                        <p><strong>Cantidad:</strong> <span th:text="${item.quantity}"></span></p>
+                        <p><strong>Precio:</strong> $<span th:text="${item.product.price}"></span></p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Información del Pago -->
+        <div>
+            <h2 class="text-2xl font-semibold mb-4">Información del Pago</h2>
+            <p><strong>ID del Pago:</strong> <span th:text="${payment.id}"></span></p>
+            <p><strong>Monto Pagado:</strong> $<span th:text="${payment.amount}"></span></p>
+            <p><strong>Estado del Pago:</strong> <span th:text="${payment.status}"></span></p>
+            <p><strong>Fecha de Transacción:</strong> <span th:text="${payment.fechaTransaccion}"></span></p>
+
+            <!-- Enlace de Pago y Código QR -->
+            <div class="mt-4">
+                <p><strong>Enlace de Pago:</strong> <a href="#" th:href="${payment.urlEnlace}" class="text-blue-500 underline">Hacer Pago</a></p>
+                <p><strong>Código QR para Pago:</strong></p>
+                <img th:src="${payment.urlQrCodeEnlace}" alt="Código QR" class="w-32 h-32 mt-2">
+            </div>
+        </div>
+
+        <!-- Botón para regresar -->
+        <div class="mt-8">
+            <a href="/" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">
+                Volver al Inicio
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -4,6 +4,7 @@ package org.esfe.services.interfaces;
 import org.esfe.models.Order;
 import org.esfe.models.OrderItem;
 import org.esfe.models.User;
+import org.esfe.models.dtos.order.ReturnCreateOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -31,7 +32,7 @@ public interface IOrderService {
 
     Order createOEditar(Order order);
 
-    Order createOrderMap(User user, List<Map<String, Object>> orderItemList);
+    ReturnCreateOrder createOrderMap(User user, List<Map<String, Object>> orderItemList);
 
     Order createOrder(User user, List<OrderItem> orderItemList);
 
