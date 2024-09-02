@@ -41,7 +41,7 @@
             <p><strong>ID del Pago:</strong> <span th:text="${payment.id}"></span></p>
             <p><strong>Monto Pagado:</strong> $<span th:text="${payment.amount}"></span></p>
             <p><strong>Estado del Pago:</strong> <span th:text="${payment.status}"></span></p>
-            <p><strong>Fecha de Transacción:</strong> <span th:text="${#dates.format(payment.fechaTransaccion, 'dd/MM/yyyy HH:mm:ss')}"></span></p>
+            <p><strong>Fecha de Transacción:</strong> <span th:text="${payment.fechaTransaccion}"></span></p>
 
             <!-- Enlace de Pago y Código QR -->
             <div class="mt-4">

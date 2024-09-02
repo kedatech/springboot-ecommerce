@@ -127,7 +127,7 @@ public class OrderService implements IOrderService {
 
         Order theOrder = orderRepository.save(orderSaved);
 
-        var paymentLinkRequest = wompiService.generateLink(String.valueOf(theOrder.getId()), theOrder.getTotalAmount(), theOrder.getId());
+        var paymentLinkRequest = wompiService.generateLink(theOrder.getTotalAmount(), theOrder.getId());
 
         Payment payment = new Payment();
         payment.setAmount(theOrder.getTotalAmount());

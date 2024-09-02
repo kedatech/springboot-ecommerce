@@ -35,11 +35,11 @@ public class SecurityConfig {
         String[] permittedPaths = {
                 "/security/**", "/login/**", "/logout", "/oauth2/**", "/",
                 "/css/**", "/js/**", "/images/**", "/upload/**", "/api/orders/**", "/orders/**",
-                "/api/wompi/**"
+                "/api/wompi/webhook"
         };
 
         String[] ignoredCsrfPaths = {
-                "/upload/**", "/api/**", "/orders/**", "/api/wompi/**"
+                "/upload/**", "/api/**", "/orders/**", "/api/wompi/webhook"
         };
 
         http

@@ -51,7 +51,7 @@ public class Payment {
     private String idCuenta;
 
     @Column(name = "fecha_transaccion", nullable = true)
-    private Timestamp fechaTransaccion;
+    private String fechaTransaccion;
 
     @Column(name = "modulo_utilizado", nullable = true)
     private String moduloUtilizado;

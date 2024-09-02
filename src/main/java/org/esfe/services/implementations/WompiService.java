@@ -36,14 +36,14 @@ public class WompiService implements IWompiService {
     @Value("${wompi.api.url}")
     private String apiUrl;
 
-    public PaymentLinkResponse generateLink(String identificadorEnlaceComercio, Double monto, Integer idOrder) {
+    public PaymentLinkResponse generateLink(Double monto, Integer idOrder) {
         try {
             String authToken = getAuth();
 
             //
             PaymentLinkRequest request = new PaymentLinkRequest();
             request.setIdAplicativo(clientId);
-            request.setIdentificadorEnlaceComercio(identificadorEnlaceComercio);
+            request.setIdentificadorEnlaceComercio(idOrder.toString());
             request.setMonto(monto);
             request.setNombreProducto("Tu carrito de compras");
 
@@ -58,7 +58,7 @@ public class WompiService implements IWompiService {
             configuracion.setEsCantidadEditable(false);
             configuracion.setCantidadPorDefecto(1);
             configuracion.setDuracionInterfazIntentoMinutos(60);
-            configuracion.setUrlRetorno(host + "/payment/result/" + idOrder);
+            configuracion.setUrlRetorno(host + "/orders/detail/" + idOrder);
             configuracion.setEmailsNotificacion(emailsNotificacion);
             configuracion.setUrlWebhook(host + "/api/wompi/webhook");
             configuracion.setNotificarTransaccionCliente(true);
