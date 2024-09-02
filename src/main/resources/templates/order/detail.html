@@ -27,12 +27,12 @@
             <div x-show="open" class="mt-4 max-h-48 overflow-y-auto">
                 <ul th:each="item : ${order.orderItems}" class="divide-y divide-gray-200">
                     <li class="py-4 flex items-center">
-                        <img src="https://via.placeholder.com/50" alt="Producto" class="h-12 w-12 object-cover rounded mr-4">
+                        <img th:src="${item.product.imageUrl}" alt="Producto" class="h-12 w-12 object-cover rounded mr-4">
                         <div>
                             <p th:text="${item.product.name}" class="text-gray-700"></p>
                             <p th:text="'Cantidad: ' + ${item.quantity}" class="text-gray-500 text-sm"></p>
                         </div>
-                        <span th:text="'$' + ${item.price}" class="ml-auto font-medium text-gray-900"></span>
+                        <span th:text="'$' + ${item.price * item.quantity}" class="ml-auto font-medium text-gray-900"></span>
                     </li>
                 </ul>
             </div>

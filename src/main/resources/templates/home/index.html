@@ -51,7 +51,7 @@
             loadOrders();
         });
 
-        function addToCart(productName, quantity, price, stock, id) {
+        function addToCart(productName, quantity, price, stock, id, img) {
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             let existingProduct = cart.find(item => item.name === productName);
 
@@ -61,7 +61,7 @@
                     existingProduct.stock -= quantity;
                 }
             } else {
-                cart.push({ name: productName, quantity: quantity, price: price, stock: stock - quantity, landProductId: id });
+                cart.push({ name: productName, quantity: quantity, price: price, stock: stock - quantity, landProductId: id, imageUrl:img });
             }
 
             localStorage.setItem('cart', JSON.stringify(cart));
@@ -96,7 +96,7 @@
                 cartContainer.innerHTML += `
                     <div class="flex justify-between mt-6">
                         <div class="flex">
-                            <img class="h-20 w-20 object-cover rounded" src="https://via.placeholder.com/150" alt="Product Image">
+                            <img class="h-20 w-20 object-cover rounded" src="${item.imageUrl}" alt="Product Image">
                             <div class="mx-3">
                                 <h3 class="text-sm text-gray-600">${item.name}</h3>
                                 <div class="flex items-center mt-2">
@@ -277,9 +277,9 @@
             <!-- Repetir esta tarjeta para cada producto -->
             <div th:id="'product-card-' + ${product.id}" th:if="${product.stock > 0}" th:each="product : ${productsWeek}" class="product-card relative mx-1 my-3 min-w-[200px] max-w-sm cursor-pointer rounded-2xl bg-white p-2 shadow-md transition-all duration-300 hover:shadow-xl">
                 <div class="relative overflow-x-hidden rounded-2xl">
-                    <img class="h-40 w-full rounded-2xl object-cover" src="https://pixahive.com/wp-content/uploads/2020/10/Gym-shoes-153180-pixahive.jpg" />
+                    <img th:src="${product.imageUrl}" class="h-40 w-full rounded-2xl object-cover" />
 
-                    <p th:if="${product.stock > 0}" th:id="'buy-icon-' + ${product.id}" th:attr="onclick=|addToCart('${product.name}', 1, '${product.price}', '${product.stock}', '${product.id}')|" class="group absolute right-2 top-2 cursor-pointer rounded-full bg-white p-2 transition-all duration-300 hover:scale-105 hover:bg-slate-50">
+                    <p th:if="${product.stock > 0}" th:id="'buy-icon-' + ${product.id}" th:attr="onclick=|addToCart('${product.name}', 1, '${product.price}', '${product.stock}', '${product.id}', '${product.imageUrl}')|" class="group absolute right-2 top-2 cursor-pointer rounded-full bg-white p-2 transition-all duration-300 hover:scale-105 hover:bg-slate-50">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-70 group-hover:opacity-50" fill="none" viewBox="0 0 24 24" stroke="black">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
@@ -303,11 +303,11 @@
             <!-- Producto agotado -->
             <div th:id="'product-card-agotado-' + ${product.id}" th:if="${product.stock == 0}" th:each="product : ${productsWeek}" class="product-card relative mx-1 my-3 min-w-[200px] max-w-sm cursor-pointer rounded-2xl bg-white p-2 shadow-md transition-all duration-300 hover:shadow-xl">
                 <div class="relative overflow-x-hidden rounded-2xl">
-                    <img class="h-40 w-full rounded-2xl object-cover" src="https://pixahive.com/wp-content/uploads/2020/10/Gym-shoes-153180-pixahive.jpg" />
+                    <img th:src="${product.imageUrl}" class="h-40 w-full rounded-2xl object-cover" />
                 </div>
                 <div class="mb-2 mt-4 flex justify-between pl-2">
                     <div>
-                        <p class="mb-0 text-lg font-semibold text-gray-900" th:text="${product.name}"></p>
+                        <p th:class="mb-0 text-lg font-semibold text-gray-900 line-trough" th:text="${product.name}"></p>
                         <p class="text-md mt-0 text-gray-800 text-red-500">AGOTADO</p>
                     </div>
                     <div class="group mb-1 mr-4 flex cursor-pointer flex-col-reverse">

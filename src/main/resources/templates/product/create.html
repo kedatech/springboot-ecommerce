@@ -8,7 +8,7 @@
 <div layout:fragment="admin-content" class="p-4 sm:ml-64">
     <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
         <h1 class="text-2xl font-semibold mb-6 text-gray-800">Crear nuevo producto</h1>
-        <form th:action="@{/products/save}" th:object="${product}" method="post" class="space-y-6">
+        <form th:action="@{/products/save}" th:object="${product}" method="post" class="space-y-6" enctype="multipart/form-data">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label for="name" class="text-sm font-medium text-gray-700">Nombre</label>
