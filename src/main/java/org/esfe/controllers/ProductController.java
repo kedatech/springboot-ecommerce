@@ -86,9 +86,13 @@ public class ProductController {
         }
 
         // Subir la imagen a Firebase y guardar la URL en el producto
-        if (!image.isEmpty()) {
+        if (image != null && !image.isEmpty()) {
             String imageUrl = firebaseStorageService.upload(image); // Subir la imagen y obtener la URL
             product.setImageUrl(imageUrl); // Guardar la URL en el objeto Product
+        }
+        else{
+            Optional<Product> existingProduct = productService.buscarPorId(product.getId());
+            existingProduct.ifPresent(value -> product.setImageUrl(value.getImageUrl()));
         }
 
         productService.createOEditar(product);
