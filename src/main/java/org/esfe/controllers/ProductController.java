@@ -3,6 +3,7 @@ package org.esfe.controllers;
 
 import org.esfe.models.Category;
 import org.esfe.models.Product;
+import org.esfe.services.implementations.FirebaseStorageService;
 import org.esfe.services.interfaces.ICategoryService;
 import org.esfe.services.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +26,8 @@ import java.util.stream.IntStream;
 @Controller
 @RequestMapping("/products")
 public class ProductController {
+    @Autowired
+    private FirebaseStorageService firebaseStorageService; // Inyectar el servicio de Firebase
     @Autowired
     private IProductService productService;
 
@@ -56,7 +61,8 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public String save(Product product, BindingResult result, Model model, RedirectAttributes attributes) {
+    public String save (Product product, BindingResult result, Model model,  @RequestParam("image") MultipartFile image, // Recibir el archivo de imagen
+                       RedirectAttributes attributes) {
         if (result.hasErrors()) {
 
             // Cargar la lista de categorías para la vista
@@ -77,6 +83,12 @@ public class ProductController {
                 attributes.addFlashAttribute("error", "Categoría no encontrada.");
                 return "product/create";
             }
+        }
+
+        // Subir la imagen a Firebase y guardar la URL en el producto
+        if (!image.isEmpty()) {
+            String imageUrl = firebaseStorageService.upload(image); // Subir la imagen y obtener la URL
+            product.setImageUrl(imageUrl); // Guardar la URL en el objeto Product
         }
 
         productService.createOEditar(product);
