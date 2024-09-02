@@ -48,211 +48,13 @@
                 localStorage.setItem("userId", user);
                 localStorage.setItem("username", username);
             }
-            loadOrders();
         });
-
-        function addToCart(productName, quantity, price, stock, id, img) {
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            let existingProduct = cart.find(item => item.name === productName);
-
-            if (existingProduct) {
-                if (existingProduct.stock - quantity >= 0) {
-                    existingProduct.quantity += quantity;
-                    existingProduct.stock -= quantity;
-                }
-            } else {
-                cart.push({ name: productName, quantity: quantity, price: price, stock: stock - quantity, landProductId: id, imageUrl:img });
-            }
-
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartView();
-            showToast(`"${productName}" ha sido añadido al carrito.`);
-        }
-
-
-        function updateCartView() {
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            let cartContainer = document.getElementById('cart-items-container-child');
-            let totalCartPriceDOM = document.getElementById('total-cart');
-            let totalCartPrice = 0;
-            cartContainer.innerHTML = '';
-
-            if(cart.length == 0){
-                totalCartPriceDOM.innerHTML = '$0';
-            }
-            cart.forEach(item => {
-                totalCartPrice += (item.price * item.quantity);
-                totalCartPriceDOM.innerText = `Total: $${totalCartPrice}`;
-                if(item.stock === 0){
-                    document.getElementById(`price-text-${item.landProductId}`).classList.add("hidden");
-                    document.getElementById(`price-text-agotado-${item.landProductId}`).classList.remove("hidden");
-                    document.getElementById(`buy-icon-${item.landProductId}`).classList.add("hidden");
-                }
-                else{
-                    document.getElementById(`price-text-${item.landProductId}`).classList.remove("hidden");
-                    document.getElementById(`price-text-agotado-${item.landProductId}`).classList.add("hidden");
-                    document.getElementById(`buy-icon-${item.landProductId}`).classList.remove("hidden");
-                }
-                cartContainer.innerHTML += `
-                    <div class="flex justify-between mt-6">
-                        <div class="flex">
-                            <img class="h-20 w-20 object-cover rounded" src="${item.imageUrl}" alt="Product Image">
-                            <div class="mx-3">
-                                <h3 class="text-sm text-gray-600">${item.name}</h3>
-                                <div class="flex items-center mt-2">
-                                    <button onclick="updateQuantity('${item.name}', -1, '${item.stock}', '${item.landProductId}')" class="text-gray-500 focus:outline-none">
-                                        <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    </button>
-                                    <span class="text-gray-700 mx-2">${item.quantity}</span>
-                                    <button onclick="updateQuantity('${item.name}', 1, '${item.stock}', '${item.landProductId}')" class="text-gray-500 focus:outline-none">
-                                        <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    </button>
-                                </div>
-                                <span class="text-gray-800 mx-2">En Stock: ${item.stock}</span>
-                            </div>
-                        </div>
-                        <span class="text-gray-600">$${item.price * item.quantity}</span>
-                    </div>
-                `;
-            });
-            updateCartCount();
-        }
-
-        function updateQuantity(productName, change, stock, landProductId) {
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            let product = cart.find(item => item.name === productName);
-
-            if (product) {
-                if (product.stock - change >= 0) {
-                    product.quantity += change;
-                    product.stock -= change;
-                }
-
-                if (product.quantity <= 0) {
-                    cart = cart.filter(item => item.name !== productName);
-                }
-            }
-
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartView();
-        }
-
-       async function loadOrders() {
-            let userIdLogged = localStorage.getItem('userId') || 0;
-
-            if (userIdLogged == 0) {
-                console.error("Error:", "No user ID found");
-                return;
-            }
-
-            try {
-                let response = await fetch(`/orders/user/${userIdLogged}`);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                let data = await response.json();
-
-                displayOrders(data);
-
-            } catch (error) {
-                console.error("Fetch error:", error);
-            }
-        }
-
-        function displayOrders(orders) {
-            let ordersContainer = document.getElementById('orders-container');
-            ordersContainer.innerHTML = ''; // Limpiar el contenedor
-            let productsCount = 0;
-            orders.forEach(order => {
-                // Crear un contenedor para cada orden
-                let orderDiv = document.createElement('div');
-                orderDiv.setAttribute('x-data', '{ open: false }');
-                orderDiv.classList.add('rounded-lg', 'bg-white', 'p-4', 'shadow-md');
-                 let productsCount = 0;
-                 order.orderItems.forEach(x=>{
-                    productsCount += x.quantity
-                 })
-                // Agregar contenido HTML a cada orden
-                orderDiv.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="ml-4">
-                                <a href="/orders/user/${order.user.id}/detail"><h3 class="text-lg font-semibold text-gray-800 underline cursor-pointer">Orden #${order.id}</h3></a>
-                                <div class="mt-2 flex items-center text-gray-700">
-                                    <span class="mr-2" text-sm>Productos: <span class="font-medium">${productsCount}</span></span>
-                                </div>
-                                <div class="mt-2 flex items-center text-gray-700">
-                                    <span class="mr-2  text-sm">Total: <span class="font-medium">$${order.totalAmount}</span></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <span class="text-sm text-gray-500 mr-4">Estado: <span class="font-medium text-green-500">${order.status}</span></span>
-                            <button @click="open = !open" class="focus:outline-none">
-                                <svg :class="{'rotate-180': open}" class="h-6 w-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Listado de productos (Dropdown) -->
-                    <div x-show="open" class="mt-4 border-t border-gray-200 pt-4">
-                        <ul class="space-y-2">
-                            <!-- Aquí se insertarán los productos mediante JavaScript -->
-                        </ul>
-                    </div>
-                `;
-
-                // Crear y agregar los productos al listado
-                let orderItemsList = orderDiv.querySelector('ul');
-                order.orderItems.forEach(item => {
-                    let itemLi = document.createElement('li');
-                    itemLi.classList.add('flex', 'justify-between');
-                    itemLi.innerHTML = `
-                        <span class="text-gray-700 text-sm">${item.product.name} (x${item.quantity})</span>
-                        <span class="font-medium text-gray-900">$${item.price}</span>
-                    `;
-                    orderItemsList.appendChild(itemLi);
-                });
-
-                // Agregar la orden completa al contenedor principal
-                ordersContainer.appendChild(orderDiv);
-            });
-        }
-
-        function showToast(message) {
-            const toastContainer = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-
-            toast.className = 'bg-green-500 text-white p-3 rounded shadow-md mb-2 transition-opacity duration-300 opacity-0';
-            toast.innerText = message;
-
-            // Agregar el toast al contenedor
-            toastContainer.appendChild(toast);
-
-            // Forzar el reflow para aplicar la clase de transición (esto hace que la transición funcione)
-            requestAnimationFrame(() => {
-                toast.classList.remove('opacity-0');
-            });
-
-            // Ocultar y eliminar el toast después de 3 segundos
-            setTimeout(() => {
-                toast.classList.add('opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-
-
-        document.addEventListener('DOMContentLoaded', updateCartView);
 
     </script>
 </head>
 <body>
 <div layout:fragment="content">
-    <div id="toast-container" class="fixed top-0 right-0 m-4 z-50"></div>
+    <div id="toast-container-1" class="fixed top-0 right-0 m-4 z-50"></div>
 
     <!-- <div class="mt-6 text-center">
         <h1>Hola, <span id="greeting"></span> <span th:text="${username}"></span></h1>
@@ -275,11 +77,11 @@
         </div>
         <div class="product-container mx-auto mt-4 max-w-6xl">
             <!-- Repetir esta tarjeta para cada producto -->
-            <div th:id="'product-card-' + ${product.id}" th:if="${product.stock > 0}" th:each="product : ${productsWeek}" class="product-card relative mx-1 my-3 min-w-[200px] max-w-sm cursor-pointer rounded-2xl bg-white p-2 shadow-md transition-all duration-300 hover:shadow-xl">
-                <div class="relative overflow-x-hidden rounded-2xl">
+            <div th:id="'product-card-' + ${product.id}" th:if="${product.stock > 0}" th:each="product : ${productsWeek}" class="product-card relative mx-1 my-3 min-w-[200px] max-w-sm rounded-2xl bg-white p-2 shadow-md transition-all duration-300 hover:shadow-xl">
+                <div th:attr="onclick=|window.location.href='/shop/product/${product.id}'|" class="relative overflow-x-hidden rounded-2xl cursor-pointer">
                     <img th:src="${product.imageUrl}" class="h-40 w-full rounded-2xl object-cover" />
 
-                    <p th:if="${product.stock > 0}" th:id="'buy-icon-' + ${product.id}" th:attr="onclick=|addToCart('${product.name}', 1, '${product.price}', '${product.stock}', '${product.id}', '${product.imageUrl}')|" class="group absolute right-2 top-2 cursor-pointer rounded-full bg-white p-2 transition-all duration-300 hover:scale-105 hover:bg-slate-50">
+                    <p th:if="${product.stock > 0}" th:id="'buy-icon-' + ${product.id}" th:attr="onclick=|addToCart('${product.name}', 1, '${product.price}', '${product.stock}', '${product.id}', '${product.imageUrl}'); event.stopPropagation();|" class="group absolute right-2 top-2 cursor-pointer rounded-full bg-white p-2 transition-all duration-300 hover:scale-105 hover:bg-slate-50">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-70 group-hover:opacity-50" fill="none" viewBox="0 0 24 24" stroke="black">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
