@@ -17,7 +17,7 @@ public class PaymentLinkRequest {
 
     @Data
     public static class FormaPago {
-        private boolean permitirTarjetaCreditoDebido = false;
+        private boolean permitirTarjetaCreditoDebido = true;
         private boolean permitirPagoConPuntoAgricola = false;
         private boolean permitirPagoEnCuotasAgricola = false;
         private boolean permitirPagoEnBitcoin = false;

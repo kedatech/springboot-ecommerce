@@ -2,8 +2,10 @@ package org.esfe.controllers;
 
 import org.esfe.models.Order;
 import org.esfe.models.OrderItem;
+import org.esfe.models.Payment;
 import org.esfe.schemas.order.CreateOrderSchema;
-import org.esfe.services.implementations.OrderService;
+import org.esfe.services.interfaces.IOrderService;
+import org.esfe.services.interfaces.IPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,10 @@ import java.util.Optional;
 public class OrderController {
 
     @Autowired
-    private OrderService orderService;
+    private IOrderService orderService;
+
+    @Autowired
+    private IPaymentService paymentService;
 
     // POST: Crear una orden
     @PostMapping
@@ -37,13 +42,28 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // GET (por usuario): Obtener órdenes del usuario y dirigir a una vista
-    @GetMapping("/user/{userId}/detail")
-    public String getOrdersDetailByUser(@PathVariable Integer userId, Model model) {
-        List<Order> orders = orderService.getOrdersByUser(userId);
-        model.addAttribute("orders", orders);
-        return "order/detail";  // Cambia "userOrdersView" por el nombre de tu vista
+    @GetMapping("/detail/{orderId}")
+    public String getOrderDetail(@PathVariable Integer orderId, Model model) {
+        Optional<Order> orderOpt = orderService.buscarPorId(orderId);
+    
+        if (orderOpt.isPresent()) {
+            Order order = orderOpt.get(); // Desempaquetar el Optional
+            Optional<Payment> paymentOpt = paymentService.findByOrder(order); // Pasar el Order desempaquetado
+    
+            if (paymentOpt.isPresent()) {
+                model.addAttribute("order", order);
+                model.addAttribute("payment", paymentOpt.get()); // Añadir el pago al modelo si existe
+                return "order/orderDetail";
+            } else {
+                // Manejar el caso donde no se encontró el Payment
+                return "redirect:/error/404/Payment not found";
+            }
+        } else {
+            // Manejar el caso donde no se encontró el Order
+            return "redirect:/error/404/Order not found";
+        }
     }
+    
 
     @GetMapping("/to-confirm")
     public String toconfirm() {

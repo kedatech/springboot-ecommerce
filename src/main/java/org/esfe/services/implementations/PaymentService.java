@@ -1,5 +1,6 @@
 package org.esfe.services.implementations;
 
+import org.esfe.models.Order;
 import org.esfe.models.Payment;
 import org.esfe.repository.IPaymentRepository;
 import org.esfe.repository.IUserRepository;
@@ -27,6 +28,7 @@ public class PaymentService implements IPaymentService {
         return paymentRepository.findAll();
     }
 
+
     @Override
     public Optional<Payment> buscarPorId(Integer id) {
         return paymentRepository.findById(id);
@@ -40,5 +42,10 @@ public class PaymentService implements IPaymentService {
     @Override
     public void eliminarPorId(Integer id) {
         paymentRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Payment> findByOrder(Order order) {
+        return paymentRepository.findByOrder(order);
     }
 }
