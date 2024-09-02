@@ -16,7 +16,7 @@
             let productInCart = cart.find(item => item.landProductId == productId);
 
             if(productInCart){
-                document.querySelector('#stock-span').textContent = "En Stock: "+productInCart.stock;
+                document.querySelector('#stock-span').textContent = productInCart.stock;
                 if(productInCart.stock <= 0){
                     document.querySelector('#shop-btn').hidden = true;
                     document.querySelector('#shop-btn-disabled').hidden = false;
@@ -27,25 +27,37 @@
                     document.querySelector('#shop-btn-disabled').hidden = true;
                     document.querySelector('#shop-btn').disabled = false;
                 }
-            }else{
-                console.error("no item");
             }
 
         }
 
         function updateNQuantity(change) {
             let productId = [[${product.id}]] || 0;
-            if(productId == 0){return}
+           // if(productId == 0){return}
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             let productInCart = cart.find(item => item.landProductId == productId);
             let quantityLbl = document.querySelector("#change-quantity");
             let quantity = parseInt(quantityLbl.textContent);
 
-            if (productInCart && quantity >= 1) {
+
+
+            if (productInCart) {
                 if(change == -1 && quantity == 1){return}
                 if (productInCart.stock - (quantity + change) >= 0) {
                     quantity += change;
                     quantityLbl.textContent = quantity;
+                }
+            }
+            else{
+                if(cart.length == 0){
+                    let stockSpan = document.querySelector('#stock-span');
+                    let s = parseInt(stockSpan.textContent);
+                    if(change == -1 && quantity == 1){return}
+                    if (s - (quantity + change) >= 0) {
+
+                        quantity += change;
+                        quantityLbl.textContent = quantity;
+                    }
                 }
             }
         }
@@ -56,7 +68,7 @@
             let quantity = parseInt(quantityLbl.textContent);
 
             addToCart(name, quantity, price, stock, id, image);
-            quantityLbl.textContent = 0;
+            quantityLbl.textContent = 1;
 
         }
 
@@ -99,7 +111,8 @@
                     </div>
                     <div>
                         <hr class="my-4" />
-                        <span id="stock-span"  class="mt-2 block text-lg text-gray-800">En stock: 200</span>
+                        <span class="mt-2 text-lg text-gray-800">En stock: </span>
+                        <span id="stock-span" th:text="${product.stock}" class="mt-2 text-lg text-gray-800">1</span>
                     </div>
                     <div class="mt-6 flex items-center">
                         <button id="shop-btn" th:attr="onclick=|add2Cart('${product.name}', '${product.price}', '${product.stock}', '${product.id}', '${product.imageUrl}')|" class="rounded-lg bg-indigo-600 px-8 py-2 text-sm font-medium text-white hover:bg-indigo-500 focus:bg-indigo-500 focus:outline-none transition duration-300 ease-in-out transform hover:scale-105">Agregar al carrito</button>
