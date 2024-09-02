@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping ("/")
@@ -37,11 +38,18 @@ public class HomeController {
             model.addAttribute("username", "");
             model.addAttribute("userId", 0);
         }
-        List<Product> productsWeek = productService.obtenerTodos();
+
+        List<Product> products = productService.obtenerTodos();
+        List<Product> allproducts = productService.obtenerTodos();
+        List<Product> productsWeek = products.stream()
+                .limit(5) // Limita a los primeros 10 productos
+                .collect(Collectors.toList());
         model.addAttribute("productsWeek", productsWeek);
+        model.addAttribute("allproducts", allproducts);
 
         return "home/index";
     }
+
 
     // controlador healthcheck
     @GetMapping("/healthcheck")

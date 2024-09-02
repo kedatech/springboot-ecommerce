@@ -86,9 +86,13 @@ public class ProductController {
         }
 
         // Subir la imagen a Firebase y guardar la URL en el producto
-        if (!image.isEmpty()) {
+        if (image != null && !image.isEmpty()) {
             String imageUrl = firebaseStorageService.upload(image); // Subir la imagen y obtener la URL
             product.setImageUrl(imageUrl); // Guardar la URL en el objeto Product
+        }
+        else{
+            Optional<Product> existingProduct = productService.buscarPorId(product.getId());
+            existingProduct.ifPresent(value -> product.setImageUrl(value.getImageUrl()));
         }
 
         productService.createOEditar(product);
@@ -119,9 +123,9 @@ public class ProductController {
         return "product/delete";
     }
 
-    @PostMapping("/delete")
-    public String delete(Product product, RedirectAttributes attributes) {
-        productService.eliminarPorId(product.getId());
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Integer id, RedirectAttributes attributes) {
+        productService.eliminarPorId(id);
         attributes.addFlashAttribute("msg", "Producto eliminado correctamente");
         return "redirect:/products";
     }

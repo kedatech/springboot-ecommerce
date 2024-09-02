@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/userLayout}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${product.name}"></title>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            updateData();
+            setInterval(updateData, 300);
+        });
+
+        function updateData(){
+            let productId = [[${product.id}]] || 0;
+            if(productId == 0){return}
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let productInCart = cart.find(item => item.landProductId == productId);
+
+            if(productInCart){
+                document.querySelector('#stock-span').textContent = productInCart.stock;
+                if(productInCart.stock <= 0){
+                    document.querySelector('#shop-btn').hidden = true;
+                    document.querySelector('#shop-btn-disabled').hidden = false;
+                    document.querySelector('#shop-btn').disabled = true;
+                }
+                else{
+                    document.querySelector('#shop-btn').hidden = false;
+                    document.querySelector('#shop-btn-disabled').hidden = true;
+                    document.querySelector('#shop-btn').disabled = false;
+                }
+            }
+
+        }
+
+        function updateNQuantity(change) {
+            let productId = [[${product.id}]] || 0;
+           // if(productId == 0){return}
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let productInCart = cart.find(item => item.landProductId == productId);
+            let quantityLbl = document.querySelector("#change-quantity");
+            let quantity = parseInt(quantityLbl.textContent);
+
+
+
+            if (productInCart) {
+                if(change == -1 && quantity == 1){return}
+                if (productInCart.stock - (quantity + change) >= 0) {
+                    quantity += change;
+                    quantityLbl.textContent = quantity;
+                }
+            }
+            else{
+                if(cart.length == 0){
+                    let stockSpan = document.querySelector('#stock-span');
+                    let s = parseInt(stockSpan.textContent);
+                    if(change == -1 && quantity == 1){return}
+                    if (s - (quantity + change) >= 0) {
+
+                        quantity += change;
+                        quantityLbl.textContent = quantity;
+                    }
+                }
+            }
+        }
+
+        function add2Cart(name, price, stock, id, image){
+            //'${product.name}', 1, '${product.price}', '${product.stock}', '${product.id}', '${product.imageUrl}'
+            let quantityLbl = document.querySelector("#change-quantity");
+            let quantity = parseInt(quantityLbl.textContent);
+
+            addToCart(name, quantity, price, stock, id, image);
+            quantityLbl.textContent = 1;
+
+        }
+
+
+    </script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div id="toast-container-2" class="fixed top-0 right-0 m-4 z-50"></div>
+
+        <div class="m-3">
+            <div class="md:flex md:items-center">
+                <!-- Imagen del producto -->
+                <div class="h-64 w-full md:w-1/2 lg:h-96">
+                    <img class="mx-auto h-full w-full max-w-lg rounded-lg shadow-lg object-cover" th:src="${product.imageUrl}" />
+                </div>
+                <!-- Información del producto -->
+                <div class="mx-auto mt-5 w-full max-w-lg md:ml-8 md:mt-0 md:w-1/2">
+                    <h3 th:text="${product.name}" class="text-2xl uppercase text-gray-800 font-bold">Nike Air</h3>
+                    <span th:text="${product.price}" class="mt-2 block text-xl text-gray-600">$125</span>
+                    <hr class="my-4" />
+                    <h4 class="text-lg text-gray-700 font-semibold">Descripción</h4>
+                    <p th:text="${product.description}" class="mt-2 text-gray-500">Zapatos clásicos de Nike, perfectos para cualquier ocasión.</p>
+                    <hr class="my-4" />
+                    <div class="mt-4">
+                        <label class="text-sm text-gray-700">Cantidad:</label>
+                        <div class="mt-2 flex items-center">
+                            <button onclick="updateNQuantity(1)" class="text-gray-600 hover:text-gray-700 focus:text-gray-700 focus:outline-none">
+                                <svg class="h-6 w-6" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </button>
+                            <span id="change-quantity" class="mx-4 text-lg text-gray-800">1</span>
+                            <button onclick="updateNQuantity(-1)" class="text-gray-600 hover:text-gray-700 focus:text-gray-700 focus:outline-none">
+                                <svg class="h-6 w-6" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <hr class="my-4" />
+                        <span class="mt-2 text-lg text-gray-800">En stock: </span>
+                        <span id="stock-span" th:text="${product.stock}" class="mt-2 text-lg text-gray-800">1</span>
+                    </div>
+                    <div class="mt-6 flex items-center">
+                        <button id="shop-btn" th:attr="onclick=|add2Cart('${product.name}', '${product.price}', '${product.stock}', '${product.id}', '${product.imageUrl}')|" class="rounded-lg bg-indigo-600 px-8 py-2 text-sm font-medium text-white hover:bg-indigo-500 focus:bg-indigo-500 focus:outline-none transition duration-300 ease-in-out transform hover:scale-105">Agregar al carrito</button>
+                        <button disabled hidden id="shop-btn-disabled" class="text-red-400 rounded-lg bg-gray-300 px-8 py-2 text-sm font-medium hover:bg-gray-500 focus:bg-gray-500 focus:outline-none transition duration-300 ease-in-out">Agotado</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<!--<script>-->
+<!--    -->
+<!--</script>-->
+</html>
