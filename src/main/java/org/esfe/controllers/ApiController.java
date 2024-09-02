@@ -2,10 +2,11 @@ package org.esfe.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.esfe.models.User;
+import org.esfe.models.dtos.order.ReturnCreateOrder;
+import org.esfe.models.dtos.wompi.PaymentLinkResponse;
 import org.esfe.models.dtos.wompi.WompiWebhook;
-import org.esfe.services.interfaces.IOrderItemService;
+import org.esfe.services.implementations.WompiService;
 import org.esfe.services.interfaces.IOrderService;
-import org.esfe.services.interfaces.IProductService;
 import org.esfe.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,7 @@ public class ApiController {
     private IOrderService orderService;
 
     @Autowired
-    private IProductService productService;
-
-    @Autowired
-    private IOrderItemService orderItemService;
+    private WompiService wompiService;
 
     @Autowired
     private IUserService userService;
@@ -51,11 +49,11 @@ public class ApiController {
         }
 
         User user = userOpt.get();
-        orderService.createOrderMap(user, orderItemsMap);
+        ReturnCreateOrder result = orderService.createOrderMap(user, orderItemsMap);
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Order created successfully");
-        response.put("redirectUrl", "/");
+        response.put("redirectUrl", "/orders/detail/" + result.getOrder().getId());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -95,6 +93,21 @@ public class ApiController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @PostMapping(path = "/wompi/generate-link", produces = "application/json")
+    public ResponseEntity<PaymentLinkResponse> generatePaymentLink(@RequestBody Map<String, Object> requestData) {
+        try {
+            String identificadorEnlaceComercio = (String) requestData.get("identificadorEnlaceComercio");
+            Double monto = Double.valueOf(requestData.get("monto").toString());
+            Integer idOrder = Integer.valueOf(requestData.get("idOrder").toString());
+
+            PaymentLinkResponse response = wompiService.generateLink(identificadorEnlaceComercio, monto, idOrder);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

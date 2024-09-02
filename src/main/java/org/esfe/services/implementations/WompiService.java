@@ -30,36 +30,35 @@ public class WompiService implements IWompiService {
     @Value("${wompi.emails.notificacion}")
     private String emailsNotificacion;
 
-    @Value("${app.host}")
-    private String host;
+//    @Value("${app.host}")
+    private String host = "https://springboot-ecommerce-test.up.railway.app";
 
-    public PaymentLinkResponse generateLink(String identificadorEnlaceComercio, Double monto, Integer paymentId) {
+    @Value("${wompi.api.url}")
+    private String apiUrl;
+
+    public PaymentLinkResponse generateLink(String identificadorEnlaceComercio, Double monto, Integer idOrder) {
         try {
-            // Obtener token de autenticación
             String authToken = getAuth();
 
-            // Crear un objeto PaymentLinkRequest y configurarlo
+            //
             PaymentLinkRequest request = new PaymentLinkRequest();
             request.setIdAplicativo(clientId);
             request.setIdentificadorEnlaceComercio(identificadorEnlaceComercio);
             request.setMonto(monto);
             request.setNombreProducto("Tu carrito de compras");
 
-            // Configurar forma de pago
+            //
             FormaPago formaPago = new FormaPago();
             formaPago.setPermitirTarjetaCreditoDebido(true);
-            formaPago.setPermitirPagoConPuntoAgricola(false);
-            formaPago.setPermitirPagoEnCuotasAgricola(false);
-            formaPago.setPermitirPagoEnBitcoin(false);
             request.setFormaPago(formaPago);
 
-            // Configurar la configuración adicional
+            //
             Configuracion configuracion = new Configuracion();
             configuracion.setEsMontoEditable(false);
             configuracion.setEsCantidadEditable(false);
             configuracion.setCantidadPorDefecto(1);
-            configuracion.setDuracionInterfazIntentoMinutos(10);
-            configuracion.setUrlRetorno(host + "/payment/success");
+            configuracion.setDuracionInterfazIntentoMinutos(60);
+            configuracion.setUrlRetorno(host + "/payment/result/" + idOrder);
             configuracion.setEmailsNotificacion(emailsNotificacion);
             configuracion.setUrlWebhook(host + "/api/wompi/webhook");
             configuracion.setNotificarTransaccionCliente(true);
@@ -71,7 +70,7 @@ public class WompiService implements IWompiService {
             // Crear y enviar la solicitud POST
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.wompi.sv/generate-link")) // Reemplazar con la URL real de la API
+                .uri(URI.create(apiUrl + "/EnlacePago"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + authToken)
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8))

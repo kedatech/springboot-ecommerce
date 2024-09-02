@@ -1,16 +1,12 @@
 package org.esfe.services.implementations;
 
-import org.esfe.models.Order;
-import org.esfe.models.OrderItem;
-import org.esfe.models.Product;
-import org.esfe.models.User;
+import org.esfe.models.*;
+import org.esfe.models.dtos.order.ReturnCreateOrder;
 import org.esfe.models.enums.OrderStatus;
 import org.esfe.repository.IOrderItemRepository;
 import org.esfe.repository.IOrderRepository;
 import org.esfe.repository.IUserRepository;
-import org.esfe.services.interfaces.IOrderItemService;
-import org.esfe.services.interfaces.IOrderService;
-import org.esfe.services.interfaces.IProductService;
+import org.esfe.services.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +32,12 @@ public class OrderService implements IOrderService {
 
     @Autowired
     private IOrderItemService orderItemService;
+
+    @Autowired
+    private IPaymentService paymentService;
+
+    @Autowired
+    private IWompiService wompiService;
 
 
     @Override
@@ -85,8 +87,7 @@ public class OrderService implements IOrderService {
         return orderRepository.save(order);
     }
 
-
-    public Order createOrderMap(User user, List<Map<String, Object>> orderItems) {
+    public ReturnCreateOrder createOrderMap(User user, List<Map<String, Object>> orderItems) {
         List<OrderItem> orderItemList = new ArrayList<>();
         double totalAmount = 0;
         Order order = new Order();
@@ -124,7 +125,24 @@ public class OrderService implements IOrderService {
         orderSaved.setOrderItems (orderItemList);
 
 
-        return orderRepository.save(orderSaved);
+        Order theOrder = orderRepository.save(orderSaved);
+
+        var paymentLinkRequest = wompiService.generateLink(String.valueOf(theOrder.getId()), theOrder.getTotalAmount(), theOrder.getId());
+
+        Payment payment = new Payment();
+        payment.setAmount(theOrder.getTotalAmount());
+        payment.setOrder(theOrder);
+        payment.setUrlEnlace(paymentLinkRequest.getUrlEnlace());
+        payment.setIdEnlace(paymentLinkRequest.getIdEnlace());
+        payment.setUrlQrCodeEnlace(paymentLinkRequest.getUrlQrCodeEnlace());
+        payment.setStatus("PENDING");
+        paymentService.createOEditar(payment);
+
+        ReturnCreateOrder returnCreateOrder = new ReturnCreateOrder();
+        returnCreateOrder.setOrder(theOrder);
+        returnCreateOrder.setPayment(payment);
+
+        return returnCreateOrder;
     }
 
 

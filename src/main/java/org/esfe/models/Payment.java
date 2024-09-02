@@ -26,13 +26,10 @@ public class Payment {
     private Order order;
 
     @Column(name = "id_enlace", nullable = false)
-    private String idEnlace;
+    private Integer idEnlace;
 
     @Column(nullable = false)
     private double amount;
-
-    @Column(nullable = false)
-    private String currency;
 
     @Column(nullable = false)
     private String status;
@@ -42,6 +39,40 @@ public class Payment {
 
     @Column(name = "updated_at", nullable = true)
     private Timestamp updatedAt;
+
+    // other properties from wompi
+    @Column(name = "url_enlace", nullable = true)
+    private String urlEnlace;
+
+    @Column(name = "url_qr_code_enlace", nullable = true)
+    private String urlQrCodeEnlace;
+
+    @Column(name = "id_cuenta", nullable = true)
+    private String idCuenta;
+
+    @Column(name = "fecha_transaccion", nullable = true)
+    private Timestamp fechaTransaccion;
+
+    @Column(name = "modulo_utilizado", nullable = true)
+    private String moduloUtilizado;
+
+    @Column(name = "forma_pago_utilizada", nullable = true)
+    private String formaPagoUtilizada;
+
+    @Column(name = "id_transaccion", nullable = true)
+    private String idTransaccion;
+
+    @Column(name = "resultado_transaccion", nullable = true)
+    private String resultadoTransaccion;
+
+    @Column(name = "codigo_autorizacion", nullable = true)
+    private String codigoAutorizacion;
+
+    @Column(name = "id_intento_pago", nullable = true)
+    private String idIntentoPago;
+
+
+    
 
     // Uso de @PrePersist para inicializar createdAt y updatedAt cuando se crea el producto
     @PrePersist
