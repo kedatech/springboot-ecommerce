@@ -39,9 +39,16 @@
                                 <!-- Se muestran los nombres de las categorías en la lista -->
                             </option>
                         </select>
-
                     </div>
-            </div>
+                    <!-- Columna derecha para la subida de la imagen -->
+                    <div class="space-y-4">
+                        <label for="image" class="text-sm font-medium text-gray-700">Imagen</label>
+                        <input type="file" name="image" id="image" accept="image/*"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <!-- Aquí va la vista previa -->
+                        <img id="imagePreview" src="#" alt="Vista previa de la imagen" class="w-32 h-32 object-cover rounded-md mt-4" style="display:none;">
+                    </div>
+                </div>
             <div class="flex justify-start space-x-4 mt-6">
                 <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     Guardar
