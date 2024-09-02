@@ -74,6 +74,25 @@
             window.location.href = "/logout";
         }
 
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            if(totalItems != 0){
+                document.getElementById("cart-count1").classList.remove("hidden");
+                document.getElementById("cart-count2").classList.remove("hidden");
+                document.getElementById("cart-count1").innerText = totalItems;
+                document.getElementById("cart-count2").innerText = totalItems;
+            }
+            else{
+                document.getElementById("cart-count1").classList.add("hidden");
+                document.getElementById("cart-count2").classList.add("hidden");
+            }
+        }
+        document.addEventListener('DOMContentLoaded', (event) => {
+            updateCartCount();
+        });
+
+
     </script>
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col pt-[90px]">
@@ -86,10 +105,13 @@
                 <div class="hidden text-gray-600 md:flex md:items-center">
                     <button
                             @click="checkUsernameAndToggleOrder"
-                            class="text-gray-600 focus:outline-none mx-4 sm:mx-0">
+                            class="relative text-gray-600 focus:outline-none mx-4 sm:mx-0">
                         <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                             <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
+                        <span id="cart-count1" class="absolute top-0 right-0 inline-block w-6 h-6 transform -translate-y-1/2 translate-x-1/2 rounded-full bg-red-600 text-white text-sm text-center leading-6 font-bold">
+                            0
+                        </span>
                     </button>
                 </div>
 
@@ -101,11 +123,16 @@
                 <div class="flex items-center justify-end w-full md:w-auto">
                     <!-- Icono de carrito (siempre visible en móvil) -->
                     <button
-                            @click="orderOpen = !orderOpen; if(orderOpen) cartOpen = false"
-                            class="text-gray-600 focus:outline-none mx-4 sm:mx-0 md:hidden">
+                            @click="checkUsernameAndToggleOrder"
+                            class="relative text-gray-600 focus:outline-none mx-4 sm:mx-0 md:hidden">
                         <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                             <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
+
+                        <!-- Punto rojo con la cantidad de productos -->
+                        <span id="cart-count2" class="absolute top-0 right-0 inline-block w-6 h-6 transform -translate-y-1/2 translate-x-1/2 rounded-full bg-red-600 text-white text-sm text-center leading-6 font-bold">
+                            0
+                        </span>
                     </button>
 
 
